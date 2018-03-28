@@ -11,12 +11,21 @@ import (
 
 type Config struct {
 	Format
+	DataSource
 }
 
 type Format struct {
 	LogPattern string
 	LogFormat  []string
 	TimeFormat string
+}
+
+type DataSource struct {
+	Driver   string
+	Username string
+	Password string
+	Database string
+	Table    string
 }
 
 func loadConfig() Config {

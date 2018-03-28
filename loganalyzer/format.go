@@ -1,20 +1,35 @@
 package loganalyzer
 
 // Log format fields
-const (
-	IP            = "IP"            // Remote IP
-	Time          = "Time"          // Time
-	RequestMethod = "RequestMethod" // Request HTTP method
-	RequestURL    = "RequestURL"    // Request URL (including params)
-	HTTPVersion   = "HTTPVersion"   // HTTP Version
-	ResponseCode  = "ResponseCode"  // Response status code
-	ResponseTime  = "ResponseTime"  // Time cost to serve this request
-	ContentSize   = "ContentSize"   // Byte sent in response
-	UserAgent     = "UserAgent"     // User agent
-	Referer       = "Referer"       // Referer
-)
+var LogFields = []string{
+	"IP",
+	"Time",
+	"RequestMethod",
+	"RequestURL",
+	"HTTPVersion",
+	"ResponseCode",
+	"ResponseTime",
+	"ContentSize",
+	"UserAgent",
+	"Referer",
+}
+
+// Corresponding SQL fields
+var DBFields = []string{
+	"ip",
+	"time",
+	"request_method",
+	"request_url",
+	"http_version",
+	"response_code",
+	"response_time",
+	"content_size",
+	"user_agent",
+	"referer",
+}
 
 // Time format, copy from golang `time` package.
+// You can also utilize the constants list in golang `time/format.go` to create new formats.
 const (
 	Apache      = "02/Jan/2006:15:04:05 -0700"
 	ANSIC       = "Mon Jan _2 15:04:05 2006"
