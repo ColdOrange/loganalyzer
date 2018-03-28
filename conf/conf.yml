@@ -1,0 +1,23 @@
+format:
+  # Log pattern, use regular expression.
+  logpattern: (.*) - - \[(.*)\] "(.*) (.*) (.*)" (.*) (.*) ".*" "(.*)"
+
+  # Log format, see `format.go` for all supported items.
+  # Note:
+  #  Case, order, and whitespace matters. Please be the same as `format.go`.
+  logformat:
+    - IP
+    - Time
+    - RequestMethod
+    - RequestURL
+    - HTTPVersion
+    - ResponseCode
+    - ContentSize
+    - UserAgent
+
+  # Time format in log, only used if `Time` field is set.
+  # Note!:
+  #  The format time string must always be "2006-01-02 15:04:05", which is the birthday of golang.
+  #  You can also utilize the constants list in the golang `time/format.go` file to create your own parse formats.
+  timeformat: 02/Jan/2006:15:04:05 -0700
+
