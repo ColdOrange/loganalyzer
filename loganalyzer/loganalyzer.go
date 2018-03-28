@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -17,16 +16,17 @@ import (
 )
 
 var (
+	config     Config
+	db         *sql.DB
 	fieldFlags = make(map[string]bool)
-	summary    Summary
 )
 
-func Analyze(logFile string) {
+func Analyze() {
 	log.Infoln("Starting analyzing log file")
 	start := time.Now()
 
 	// Load config
-	config := loadConfig()
+	config = loadConfig()
 	for _, field := range config.LogFormat {
 		fieldFlags[field] = true
 	}
@@ -37,11 +37,11 @@ func Analyze(logFile string) {
 
 	// Open DB and clear table
 	log.Debugln("Open and clear DB")
-	db, err := sql.Open(config.Driver, fmt.Sprintf("%s:%s@/%s", config.Username, config.Password, config.Database))
+	db, err = sql.Open(config.Driver, fmt.Sprintf("%s:%s@/%s", config.Username, config.Password, config.Database))
 	if err != nil {
 		log.Fatalf("DB open error: %v", err)
 	}
-	defer db.Close()
+	//defer db.Close()
 	_, err = db.Exec("TRUNCATE TABLE " + config.Table)
 	if err != nil {
 		log.Fatalf("DB truncate table error: %v", err)
@@ -55,8 +55,7 @@ func Analyze(logFile string) {
 	defer stmt.Close()
 
 	// Open log file
-	_, summary.FileName = filepath.Split(logFile)
-	file, err := os.Open(logFile)
+	file, err := os.Open(config.LogFile)
 	if err != nil {
 		log.Fatalf("Log file open error: %v", err)
 	}
@@ -116,7 +115,7 @@ ReadLog:
 		}
 
 		// Insert into DB
-		_, err = stmt.Exec(values...) // TODO: use Batch
+		_, err = stmt.Exec(values...) // TODO: use Batch to improve performance
 		if err != nil {
 			log.Fatalf("DB insert stmt execute error: %v", err)
 		}

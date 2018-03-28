@@ -7,7 +7,7 @@ import (
 )
 
 func handlerSummary(w http.ResponseWriter, _ *http.Request) {
-	w.Write(summary.json())
+	w.Write(summary())
 }
 
 func NewServer(addr string) *http.Server {

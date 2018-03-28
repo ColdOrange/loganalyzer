@@ -1,22 +1,31 @@
-DROP TABLE IF EXISTS `log`;
+DROP TABLE IF EXISTS log;
 
 # The table has the same format with `format.go`.
 # DO NOT EDIT.
 
-CREATE TABLE `log` (
-  `id` int(15) unsigned NOT NULL AUTO_INCREMENT,
-  `ip` varchar(46) DEFAULT NULL,
-  `time` datetime DEFAULT NULL,
-  `request_method` varchar(10) DEFAULT NULL,
-  `request_url` varchar(255) DEFAULT NULL,
-  `http_version` varchar(10) DEFAULT NULL,
-  `response_code` varchar(5) DEFAULT NULL,
-  `response_time` int(10) DEFAULT NULL,
-  `content_size` int(20) DEFAULT NULL,
-  `user_agent` varchar(255) DEFAULT NULL,
-  `referer` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `ip` (`ip`),
-  INDEX `time` (`time`),
-  INDEX `request_url` (`request_url`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE log
+(
+  id             INT(15) UNSIGNED AUTO_INCREMENT
+    PRIMARY KEY,
+  ip             VARCHAR(46)  NULL,
+  time           DATETIME     NULL,
+  request_method VARCHAR(10)  NULL,
+  request_url    VARCHAR(255) NULL,
+  http_version   VARCHAR(10)  NULL,
+  response_code  VARCHAR(5)   NULL,
+  response_time  INT(10)      NULL,
+  content_size   INT(20)      NULL,
+  user_agent     VARCHAR(255) NULL,
+  referer        VARCHAR(255) NULL
+)
+  ENGINE = InnoDB
+  CHARSET = utf8;
+
+CREATE INDEX ip
+  ON log (ip);
+
+CREATE INDEX time
+  ON log (time);
+
+CREATE INDEX request_url
+  ON log (request_url);

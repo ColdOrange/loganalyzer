@@ -1,4 +1,6 @@
 format:
+  logfile: /Users/Orange/Desktop/毕设/log/ssg-surfer/apache-access-small.log
+
   # Log pattern, use regular expression.
   logpattern: (.*) - - \[(.*)\] "(.*) (.*) (.*)" (.*) (.*) ".*" "(.*)"
 
@@ -26,4 +28,3 @@ datasource:
   username: root
   password: XuWenju9044
   database: log_analyzer
-  table: log

@@ -15,6 +15,7 @@ type Config struct {
 }
 
 type Format struct {
+	LogFile    string
 	LogPattern string
 	LogFormat  []string
 	TimeFormat string
