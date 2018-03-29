@@ -23,7 +23,7 @@ var (
 
 func Analyze() {
 	log.Infoln("Starting analyzing log file")
-	start := time.Now()
+	zero := time.Now()
 
 	// Load config
 	config = loadConfig()
@@ -32,32 +32,32 @@ func Analyze() {
 	}
 	pattern, err := regexp.Compile(config.LogPattern)
 	if err != nil {
-		log.Fatalf("Log pattern compile error: %v", err)
+		log.Fatalln("Log pattern compile error:", err)
 	}
 
 	// Open DB and clear table
 	log.Debugln("Open and clear DB")
-	db, err = sql.Open(config.Driver, fmt.Sprintf("%s:%s@/%s", config.Username, config.Password, config.Database))
+	db, err = sql.Open(config.Driver, fmt.Sprintf("%s:%s@/%s?parseTime=true", config.Username, config.Password, config.Database))
 	if err != nil {
-		log.Fatalf("DB open error: %v", err)
+		log.Fatalln("DB open error:", err)
 	}
 	//defer db.Close()
-	_, err = db.Exec("TRUNCATE TABLE " + config.Table)
+	_, err = db.Exec("TRUNCATE TABLE log")
 	if err != nil {
-		log.Fatalf("DB truncate table error: %v", err)
+		log.Fatalln("DB truncate table error:", err)
 	}
 
 	// Prepare insert stmt
 	stmt, err := db.Prepare(prepareInsertStmt())
 	if err != nil {
-		log.Fatalf("DB insert stmt prepare error: %v", err)
+		log.Fatalln("DB insert stmt prepare error:", err)
 	}
 	defer stmt.Close()
 
 	// Open log file
 	file, err := os.Open(config.LogFile)
 	if err != nil {
-		log.Fatalf("Log file open error: %v", err)
+		log.Fatalln("Log file open error:", err)
 	}
 	defer file.Close()
 
@@ -117,12 +117,12 @@ ReadLog:
 		// Insert into DB
 		_, err = stmt.Exec(values...) // TODO: use Batch to improve performance
 		if err != nil {
-			log.Fatalf("DB insert stmt execute error: %v", err)
+			log.Fatalln("DB insert stmt execute error:", err)
 		}
 	}
 
 	log.Debugln("Finished inserting into DB")
-	log.Infof("Finished analyzing log file in %.3fs", time.Since(start).Seconds())
+	log.Infof("Finished analyzing log file in %.3fs", time.Since(zero).Seconds())
 }
 
 func prepareInsertStmt() string {
@@ -135,6 +135,6 @@ func prepareInsertStmt() string {
 	}
 
 	result := fmt.Sprintf("INSERT INTO log (%s) VALUES (%s)", strings.Join(fields, ","), strings.Join(placeholders, ","))
-	log.Debugln("Prepare Insert statement: %s", result)
+	log.Debugln("Prepare Insert statement:", result)
 	return result
 }

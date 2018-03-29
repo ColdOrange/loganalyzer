@@ -2,6 +2,8 @@ package loganalyzer
 
 import (
 	"net/http"
+	"path"
+	"strings"
 	"time"
 
 	log "loganalyzer/loganalyzer/logging"
@@ -21,14 +23,24 @@ func (Handler *Handler) Bind(pattern string, handler func(w http.ResponseWriter,
 	Handler.mux[pattern] = handler
 }
 
+var staticFilesHandler http.Handler
+
+// Static file server
+func init() {
+	fileServer := http.FileServer(http.Dir(path.Join(ProjectPath, "asserts/static")))
+	staticFilesHandler = http.StripPrefix("/static/", fileServer)
+}
+
 func (Handler *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	zero := time.Now()
 	defer func() {
 		duration := time.Since(zero)
-		log.Infof("%s [%.3fms] %s", r.Method, duration.Seconds()*1000, r.URL)
+		log.Infof("%s %s [%.3fms]", r.Method, r.URL, duration.Seconds()*1000)
 	}()
 
-	if handler, ok := Handler.mux[r.URL.String()]; ok {
+	if strings.HasPrefix(r.URL.Path, "/static/") {
+		staticFilesHandler.ServeHTTP(w, r)
+	} else if handler, ok := Handler.mux[r.URL.String()]; ok {
 		handler(w, r)
 	} else {
 		w.WriteHeader(404)

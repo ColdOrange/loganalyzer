@@ -4,6 +4,7 @@ import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"path"
+	"path/filepath"
 	"runtime"
 
 	log "loganalyzer/loganalyzer/logging"
@@ -29,20 +30,31 @@ type DataSource struct {
 	Table    string
 }
 
-func loadConfig() Config {
+var ProjectPath string
+
+func init() {
+	// Get project root path, it's a little bit tricky but I can't figure out a better way...
 	_, filename, _, ok := runtime.Caller(1) // TODO: maybe a less tricky way?
 	if !ok {
-		log.Fatalf("Runtime caller error")
+		log.Fatalln("Runtime caller error")
 	}
-	data, err := ioutil.ReadFile(path.Join(path.Dir(filename), "../conf/conf.yml"))
+	ProjectPath, err := filepath.Abs(path.Join(path.Dir(filename), "/.."))
 	if err != nil {
-		log.Fatalf("Read config error: %v", err)
+		log.Fatalln("Config project root path error:", err)
+	}
+	log.Debugln("Project root path:", ProjectPath)
+}
+
+func loadConfig() Config {
+	data, err := ioutil.ReadFile(path.Join(ProjectPath, "config/config.yml"))
+	if err != nil {
+		log.Fatalln("Read config error:", err)
 	}
 
 	var config Config
 	err = yaml.Unmarshal(data, &config)
 	if err != nil {
-		log.Fatalf("Unmarshal config error: %v", err)
+		log.Fatalln("Unmarshal config error:", err)
 	}
 	return config
 }

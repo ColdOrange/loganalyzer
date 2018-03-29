@@ -2,6 +2,9 @@
 .DS_Store
 .idea/
 
+# asserts
+asserts/node_modules
+
 # Binaries for programs and plugins
 *.exe
 *.exe~

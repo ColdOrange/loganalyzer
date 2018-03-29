@@ -6,7 +6,8 @@ var logger *logrus.Logger
 
 func init() {
 	logger = logrus.New()
-	//logger.Level = logrus.DebugLevel
+	logger.Level = logrus.DebugLevel
+	//logger.Out, _ = os.OpenFile("log", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
 	logger.Formatter = &logrus.TextFormatter{
 		FullTimestamp:   true,
 		TimestampFormat: "2006-01-02 15:04:05",
@@ -83,4 +84,16 @@ func Panicln(args ...interface{}) {
 
 func Panicf(format string, args ...interface{}) {
 	logger.Panicf(format, args...)
+}
+
+func Print(args ...interface{}) {
+	logger.Print(args...)
+}
+
+func Println(args ...interface{}) {
+	logger.Println(args...)
+}
+
+func Printf(format string, args ...interface{}) {
+	logger.Printf(format, args...)
 }
