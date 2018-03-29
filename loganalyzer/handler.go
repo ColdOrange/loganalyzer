@@ -27,7 +27,7 @@ var staticFilesHandler http.Handler
 
 // Static file server
 func init() {
-	fileServer := http.FileServer(http.Dir(path.Join(ProjectPath, "asserts/static")))
+	fileServer := http.FileServer(http.Dir(path.Join(ProjectPath, "assets/static")))
 	staticFilesHandler = http.StripPrefix("/static/", fileServer)
 }
 

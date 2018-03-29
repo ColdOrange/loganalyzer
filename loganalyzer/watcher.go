@@ -12,10 +12,10 @@ import (
 )
 
 func StartNodeWatcher() {
-	webpackPath, _ := filepath.Abs(path.Join(ProjectPath, "asserts/node_modules/webpack/bin/webpack.js"))
+	webpackPath, _ := filepath.Abs(path.Join(ProjectPath, "assets/node_modules/webpack/bin/webpack.js"))
 	log.Debugln("Webpack path:", webpackPath)
 	cmd := exec.Command("node", webpackPath, "--mode", "development", "--colors")
-	cmd.Dir, _ = filepath.Abs(path.Join(ProjectPath, "asserts/")) // Webpack should exec under `asserts` directory
+	cmd.Dir, _ = filepath.Abs(path.Join(ProjectPath, "assets/")) // Webpack should exec under `assets` directory
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
