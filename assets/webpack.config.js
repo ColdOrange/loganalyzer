@@ -15,15 +15,32 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['react']
+            presets: ['env', 'react'],
           }
         }
       },
       {
-        test: /\.s?css$/,
+        test: /\.css$/,
+        exclude: /node_modules/,
         use: ExtractTextPlugin.extract({
-          use: 'css-loader!sass-loader',
-          fallback: 'style-loader'
+          fallback: 'style-loader',
+          use: {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              localIdentName: '[path][name]-[local]',
+            }
+          }
+        })
+      },
+      {
+        test: /\.css$/,
+        include: /node_modules/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: {
+            loader: 'css-loader',
+          }
         })
       }
     ]

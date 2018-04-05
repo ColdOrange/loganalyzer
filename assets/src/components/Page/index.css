@@ -1,0 +1,18 @@
+.page {
+  margin-left: 200px;
+}
+
+.header {
+  background: #fff;
+  padding: 0;
+}
+
+.content {
+  margin: 24px 16px 0;
+  overflow: initial;
+  height: 100vh;
+}
+
+.footer {
+  text-align: center;
+}

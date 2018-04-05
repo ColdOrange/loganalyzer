@@ -2,69 +2,82 @@
 
 import * as React from 'react';
 import { Table } from 'antd';
-import reqwest from 'reqwest';
 
-import './index.css'
+import styles from './index.css';
 
-const columns = [{
+const columns = [
+  {
     title: 'Start Time',
     dataIndex: 'start_time',
     width: '20%',
-}, {
+  },
+  {
     title: 'End Time',
     dataIndex: 'end_time',
     width: '20%',
-}, {
+  },
+  {
     title: 'Page Views',
     dataIndex: 'page_views',
     width: '20%',
-}, {
+  },
+  {
     title: 'User Views',
     dataIndex: 'user_views',
     width: '20%',
-}, {
+  },
+  {
     title: 'Bandwidth',
     dataIndex: 'bandwidth',
     width: '20%',
-}];
+  }
+];
 
-class Summary extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            data: [],
+type State = {
+  data: any[],
+  loading: boolean,
+}
+
+class Summary extends React.Component<{}, State> {
+  constructor() {
+    super();
+    this.state = {
+      data: [],
+      loading: false,
+    };
+  }
+
+  loadData() {
+    this.setState({loading: true});
+    fetch('/api/summary')
+      .then(res => res.json())
+      .then(  // TODO: handle error
+        result => {
+          this.setState({
+            data: [result],
             loading: false,
-        };
-    }
+          });
+        }
+      );
+  }
 
-    fetch() {
-        this.setState({ loading: true });
-        reqwest({
-            url: 'http://127.0.0.1:8080/api/summary',
-            method: 'get',
-            type: 'json'
-        }).then((data) => {
-            this.setState({
-                loading: false,
-                data: [data],
-            });
-        });
-    }
+  componentDidMount() {
+    this.loadData();
+  }
 
-    componentDidMount() {
-        this.fetch();
-    }
-
-    render() {
-        return (
-            <Table columns={columns}
-                   rowKey={record => record.registered}
-                   dataSource={this.state.data}
-                   loading={this.state.loading}
-                   pagination={false}
-            />
-        );
-    }
+  render() {
+    return (
+      <div className={styles.summary}>
+        <Table
+          columns={columns}
+          dataSource={this.state.data}
+          loading={this.state.loading}
+          rowKey="start_time"
+          pagination={false}
+        />
+      </div>
+    );
+  }
 }
 
 export default Summary;

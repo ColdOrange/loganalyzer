@@ -21229,8 +21229,59 @@ li.ant-tree-treenode-disabled > .ant-tree-node-content-wrapper:hover {
     padding: 0;
     opacity: 0;
   }
+}.src-components-Sidebar-components-Logo-index-logo {
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.logo {
-  height: 32px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 16px; }
+
+.src-components-Sidebar-components-Logo-index-img {
+  width: 40px;
+  margin-right: 8px;
+}
+
+.src-components-Sidebar-components-Logo-index-span {
+  vertical-align: text-bottom;
+  font-size: 16px;
+  text-transform: uppercase;
+  display: inline-block;
+  font-weight: 700;
+  color: #1890ff;
+  white-space: nowrap;
+}
+.src-components-Sidebar-index-sider {
+  overflow: auto;
+  background: #fff;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+}
+
+.src-components-Sidebar-index-menu {
+  border-right: 0;
+}
+.src-components-Page-index-page {
+  margin-left: 200px;
+}
+
+.src-components-Page-index-header {
+  background: #fff;
+  padding: 0;
+}
+
+.src-components-Page-index-content {
+  margin: 24px 16px 0;
+  overflow: initial;
+  height: 100vh;
+}
+
+.src-components-Page-index-footer {
+  text-align: center;
+}
+.src-components-Summary-index-summary {
+  padding: 24px;
+  background: #fff;
+  text-align: center;
+  height: 100vh;
+}
