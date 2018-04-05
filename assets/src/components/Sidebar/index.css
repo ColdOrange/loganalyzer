@@ -1,0 +1,11 @@
+.sider {
+  overflow: auto;
+  background: #fff;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+}
+
+.menu {
+  border-right: 0;
+}

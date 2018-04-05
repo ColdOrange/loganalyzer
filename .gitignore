@@ -3,7 +3,10 @@
 .idea/
 
 # assets
-assets/node_modules
+assets/node_modules/
+assets/static/css/*
+assets/static/js/*
+assets/yarn-error.log
 
 # Binaries for programs and plugins
 *.exe
