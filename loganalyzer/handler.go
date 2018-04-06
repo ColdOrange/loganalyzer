@@ -1,6 +1,7 @@
 package loganalyzer
 
 import (
+	"io/ioutil"
 	"net/http"
 	"path"
 	"strings"
@@ -38,11 +39,16 @@ func (Handler *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		log.Infof("%s %s [%.3fms]", r.Method, r.URL, duration.Seconds()*1000)
 	}()
 
-	if strings.HasPrefix(r.URL.Path, "/static/") {
+	if strings.HasPrefix(r.URL.Path, "/static/") { // static files
 		staticFilesHandler.ServeHTTP(w, r)
-	} else if handler, ok := Handler.mux[r.URL.String()]; ok {
-		handler(w, r)
-	} else {
-		w.WriteHeader(404)
+	} else if strings.HasPrefix(r.URL.Path, "/api/") { // api service
+		if handler, ok := Handler.mux[r.URL.String()]; ok {
+			handler(w, r)
+		} else {
+			w.WriteHeader(404)
+		}
+	} else { // otherwise, just send index page and let front end do the route
+		index, _ := ioutil.ReadFile(path.Join(ProjectPath, "assets/static/index.html")) // TODO: in memory?
+		w.Write(index)
 	}
 }

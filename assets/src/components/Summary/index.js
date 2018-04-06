@@ -50,11 +50,11 @@ class Summary extends React.Component<{}, State> {
   loadData() {
     this.setState({loading: true});
     fetch('/api/summary')
-      .then(res => res.json())
+      .then(response => response.json())
       .then(  // TODO: handle error
-        result => {
+        data => {
           this.setState({
-            data: [result],
+            data: [data],
             loading: false,
           });
         }
