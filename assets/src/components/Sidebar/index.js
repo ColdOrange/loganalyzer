@@ -14,11 +14,14 @@ type Props = {
 
 class Sidebar extends React.Component<Props> {
   render() {
-    const currentPage = window.location.pathname.substring(1);
+    let currentPage = window.location.pathname.substring(1);
+    if (currentPage === '') {
+      currentPage = 'summary';
+    }
     return (
       <Sider className={styles.sider}>
         <Logo />
-        <Menu className={styles.menu} theme="light" mode="inline" defaultSelectedKeys={currentPage}>
+        <Menu className={styles.menu} theme="light" mode="inline" defaultSelectedKeys={[currentPage]}>
           {
             this.props.children
           }

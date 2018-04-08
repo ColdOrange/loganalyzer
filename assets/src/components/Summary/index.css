@@ -1,6 +1,7 @@
-.summary {
-  padding: 24px;
-  background: #fff;
+.title {
   text-align: center;
-  height: 100vh;
+}
+
+.card {
+  padding: 8px 0 16px 0;
 }

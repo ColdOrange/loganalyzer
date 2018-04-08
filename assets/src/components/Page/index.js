@@ -21,7 +21,7 @@ class Page extends React.Component<Props> {
             this.props.children
           }
         </Content>
-        <Footer className={styles.footer}>Log Analyzer © 2018 Created by Orange</Footer>
+        <Footer className={styles.footer}>Log Analyzer © 2018 Wenju Xu</Footer>
       </Layout>
     );
   }
