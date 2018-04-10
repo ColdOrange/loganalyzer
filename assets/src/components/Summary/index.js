@@ -1,10 +1,9 @@
 // @flow
 
 import * as React from 'react';
-import { Card } from 'antd';
 
+import ContentCard from '../ContentCard';
 import KVCard from './components/KVCard';
-import styles from './index.css';
 
 type State = {
   fileName: string,
@@ -79,13 +78,8 @@ class Summary extends React.Component<{}, State> {
 
   render() {
     const loading = !this.state.isLoaded;
-    const title = <h4 className={styles.title}>{this.state.fileName}</h4>;
     return (
-      <Card
-        title={loading ? '' : title}
-        className={styles.card}
-        bordered={false}
-      >
+      <ContentCard title={loading ? '' : this.state.fileName}>
         <KVCard
           title="Time Range"
           loading={loading}
@@ -106,7 +100,7 @@ class Summary extends React.Component<{}, State> {
           loading={loading}
           data={mapToKVArray(this.state.bandwidth)}
         />
-      </Card>
+      </ContentCard>
     );
   }
 }
