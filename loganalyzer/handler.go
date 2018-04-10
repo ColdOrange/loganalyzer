@@ -42,7 +42,7 @@ func (Handler *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(r.URL.Path, "/static/") { // static files
 		staticFilesHandler.ServeHTTP(w, r)
 	} else if strings.HasPrefix(r.URL.Path, "/api/") { // api service
-		if handler, ok := Handler.mux[r.URL.String()]; ok {
+		if handler, ok := Handler.mux[r.URL.Path]; ok {
 			handler(w, r)
 		} else {
 			w.WriteHeader(404)

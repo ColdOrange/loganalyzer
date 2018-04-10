@@ -2,11 +2,19 @@
 
 import * as React from 'react';
 
+import PageViewsDaily from './components/PageViewsDaily';
+import PageViewsHourly from './components/PageViewsHourly';
+import PageViewsMonthly from './components/PageViewsMonthly';
+
 class PageViews extends React.Component<{}> {
   render() {
     return (
       <div>
-        <h1>Page Views</h1>
+        <PageViewsDaily />
+        <div style={{paddingTop: 24}} />
+        <PageViewsHourly />
+        <div style={{paddingTop: 24}} />
+        <PageViewsMonthly />
       </div>
     );
   }

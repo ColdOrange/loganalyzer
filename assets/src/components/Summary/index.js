@@ -79,7 +79,7 @@ class Summary extends React.Component<{}, State> {
   render() {
     const loading = !this.state.isLoaded;
     return (
-      <ContentCard title={loading ? '' : this.state.fileName}>
+      <ContentCard title={this.state.fileName}>
         <KVCard
           title="Time Range"
           loading={loading}

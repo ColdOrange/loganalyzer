@@ -3,19 +3,18 @@ package loganalyzer
 import (
 	"encoding/json"
 	"path/filepath"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	log "loganalyzer/loganalyzer/logging"
 )
 
 type Summary struct {
-	FileName  string    `json:"file_name"`
-	StartTime time.Time `json:"start_time"`
-	EndTime   time.Time `json:"end_time"`
-	PageViews int64     `json:"page_views"`
-	UserViews int64     `json:"user_views"`
-	Bandwidth float64   `json:"bandwidth"`
+	FileName  string  `json:"file_name"`
+	StartTime string  `json:"start_time"`
+	EndTime   string  `json:"end_time"`
+	PageViews int64   `json:"page_views"`
+	UserViews int64   `json:"user_views"`
+	Bandwidth float64 `json:"bandwidth"`
 }
 
 func summary() []byte {

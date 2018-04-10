@@ -37,7 +37,7 @@ func Analyze() {
 
 	// Open DB and clear table
 	log.Debugln("Open and clear DB")
-	db, err = sql.Open(config.Driver, fmt.Sprintf("%s:%s@/%s?parseTime=true", config.Username, config.Password, config.Database))
+	db, err = sql.Open(config.Driver, fmt.Sprintf("%s:%s@/%s?parseTime=false", config.Username, config.Password, config.Database))
 	if err != nil {
 		log.Fatalln("DB open error:", err)
 	}
