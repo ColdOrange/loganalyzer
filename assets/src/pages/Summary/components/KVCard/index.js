@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import { Card } from 'antd';
+import { Card, Spin } from 'antd';
 
 import KVTable from '../KVTable';
 
@@ -19,14 +19,15 @@ class KVCard extends React.Component<Props> {
     return (
       <Card
         title={this.props.title}
-        loading={this.props.loading}
         type="inner"
         bodyStyle={{padding: 0}}
         bordered={false}
       >
-        {
-          this.props.loading ? '' : <KVTable data={this.props.data}/>
-        }
+        <Spin spinning={this.props.loading}>
+          {
+            this.props.loading ? <KVTable data={[]} /> : <KVTable data={this.props.data}/>
+          }
+        </Spin>
       </Card>
     );
   }

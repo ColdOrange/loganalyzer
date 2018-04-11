@@ -7,6 +7,12 @@ module.exports = {
     filename: 'app.js',
     path: path.resolve(__dirname, './static/js')
   },
+  resolve: {
+    modules: [
+      'node_modules',
+      path.resolve(__dirname, "./src")
+    ]
+  },
   module: {
     rules: [
       {

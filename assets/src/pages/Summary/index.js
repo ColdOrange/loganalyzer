@@ -2,32 +2,29 @@
 
 import * as React from 'react';
 
-import ContentCard from '../ContentCard';
+import ContentCard from 'components/ContentCard';
 import KVCard from './components/KVCard';
 
 type State = {
   fileName: string,
-  timeRange: any, // TODO: how to deal with flow type of `Object` and `null`?
-  pageViews: any,
-  userViews: any,
-  bandwidth: any,
+  timeRange: { [string]: any },
+  pageViews: { [string]: any },
+  userViews: { [string]: any },
+  bandwidth: { [string]: any },
   isLoaded: boolean,
 }
 
 class Summary extends React.Component<{}, State> {
-  constructor() {
-    super();
-    this.state = {
-      fileName: '',
-      timeRange: null,
-      pageViews: null,
-      userViews: null,
-      bandwidth: null,
-      isLoaded: false,
-    };
-  }
+  state = {
+    fileName: '',
+    timeRange: {},
+    pageViews: {},
+    userViews: {},
+    bandwidth: {},
+    isLoaded: false,
+  };
 
-  processData(data: Object) {
+  processData = (data: Object) => {
     // Time Range
     const timeRange = {
       'Start Time': data.start_time,
@@ -60,17 +57,17 @@ class Summary extends React.Component<{}, State> {
       bandwidth: bandwidth,
       isLoaded: true,
     });
-  }
+  };
 
-  loadData() {
+  loadData = () => {
     fetch('/api/summary')
       .then(response => response.json())
       .then(  // TODO: handle error
-        data => {
+        data => { // TODO: handle server api error (status: failed)
           this.processData(data);
         }
       );
-  }
+  };
 
   componentDidMount() {
     this.loadData();

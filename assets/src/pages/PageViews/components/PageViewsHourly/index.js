@@ -3,8 +3,8 @@
 import * as React from 'react';
 import { Select } from 'antd';
 
-import ContentCard from '../../../ContentCard';
-import CustomLineChart from '../../../CustomLineChart';
+import ContentCard from 'components/ContentCard';
+import CustomLineChart from 'components/CustomLineChart';
 import styles from './index.css';
 
 type State = {
@@ -17,14 +17,11 @@ type State = {
 }
 
 class PageViewsHourly extends React.Component<{}, State> {
-  constructor() {
-    super();
-    this.state = {
-      days: [],
-      data: [],
-      isLoaded: false,
-    };
-  }
+  state = {
+    days: [],
+    data: [],
+    isLoaded: false,
+  };
 
   loadData = (date: string) => {
     fetch(`/api/page-views/hourly?date=${date}`)
@@ -32,7 +29,7 @@ class PageViewsHourly extends React.Component<{}, State> {
       .then(  // TODO: handle error
         data => { // TODO: handle server api error (status: failed)
           this.setState({
-            data: data, // TODO: complete 24 values?
+            data: data,
             isLoaded: true,
           });
         }
@@ -52,26 +49,35 @@ class PageViewsHourly extends React.Component<{}, State> {
       );
   }
 
-  render() {  // TODO: better way to first render Select.defaultValue (https://reactjs.org/docs/forms.html#controlled-components)
+  render() {
     const loading = !this.state.isLoaded;
+    const placeholder = // placeholder for rendering while loading
+      <CustomLineChart
+        data={[]}
+        xAxisKey="time"
+        lineKey="pv"
+        color="#8884d8"
+      />;
+
     return (
-      <ContentCard title="Hourly">
-        {
-          loading ? '' :
-            <Select
-              defaultValue={this.state.days[0]}
-              className={styles.select}
-              onChange={this.loadData}
-            >
-              {
-                this.state.days.map(date =>
-                  <Select.Option key={date} value={date}>
-                    {date}
-                  </Select.Option>
-                )
-              }
-            </Select>
-        }
+      <ContentCard
+        title="Hourly"
+        loading={loading}
+        placeholder={placeholder}
+      >
+        <Select
+          defaultValue={this.state.days[0]}
+          className={styles.select}
+          onChange={this.loadData}
+        >
+          {
+            this.state.days.map(date =>
+              <Select.Option key={date} value={date}>
+                {date}
+              </Select.Option>
+            )
+          }
+        </Select>
         <div className={styles.container}>
           <CustomLineChart
             data={this.state.data}

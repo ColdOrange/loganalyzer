@@ -1,13 +1,14 @@
 // @flow
 
 import * as React from 'react';
-import { Card } from 'antd';
+import { Card, Spin } from 'antd';
 
 import styles from './index.css';
 
 type Props = {
   title: string,
   loading?: boolean,
+  placeholder?: React.Node, // TODO: better way to render loading indicator?
   children?: React.Node,
 }
 
@@ -18,13 +19,14 @@ class ContentCard extends React.Component<Props> {
     return (
       <Card
         title={title}
-        loading={loading}
         className={styles.card}
         bordered={false}
       >
-        {
-          this.props.children
-        }
+        <Spin spinning={loading}>
+          {
+            loading ? this.props.placeholder : this.props.children
+          }
+        </Spin>
       </Card>
     );
   }

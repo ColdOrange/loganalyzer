@@ -7,7 +7,7 @@ import (
 )
 
 func handlerSummary(w http.ResponseWriter, _ *http.Request) {
-	w.Header().Set("Content-Type", "application/json") // TODO: do we really need this?
+	w.Header().Set("Content-Type", "application/json")
 	w.Write(summary())
 }
 

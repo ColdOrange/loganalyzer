@@ -6,7 +6,7 @@ import (
 
 func main() {
 	loganalyzer.Analyze()
-	//go loganalyzer.StartNodeWatcher()
+	//go loganalyzer.StartNodeWatcher() // TODO: fix webpack watcher
 	server := loganalyzer.NewServer("127.0.0.1:8080")
 	server.ListenAndServe()
 }

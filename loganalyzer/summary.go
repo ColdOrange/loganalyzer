@@ -23,7 +23,7 @@ func summary() []byte {
 
 	row := db.QueryRow("SELECT time FROM log ORDER BY id LIMIT 1")
 	err := row.Scan(&summary.StartTime)
-	if err != nil { // TODO: why so many err checks...
+	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)
 	}
@@ -35,22 +35,8 @@ func summary() []byte {
 		return []byte(`{"status": "failed"}`)
 	}
 
-	row = db.QueryRow("SELECT count(*) FROM log")
-	err = row.Scan(&summary.PageViews)
-	if err != nil {
-		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
-	}
-
-	row = db.QueryRow("SELECT count(distinct(ip)) FROM log")
-	err = row.Scan(&summary.UserViews)
-	if err != nil {
-		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
-	}
-
-	row = db.QueryRow("SELECT sum(content_size) FROM log")
-	err = row.Scan(&summary.Bandwidth)
+	row = db.QueryRow("SELECT count(*), count(distinct(ip)), sum(content_size) FROM log")
+	err = row.Scan(&summary.PageViews, &summary.UserViews, &summary.Bandwidth)
 	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)

@@ -5,15 +5,16 @@ import * as React from 'react';
 import PageViewsDaily from './components/PageViewsDaily';
 import PageViewsHourly from './components/PageViewsHourly';
 import PageViewsMonthly from './components/PageViewsMonthly';
+import styles from './index.css';
 
 class PageViews extends React.Component<{}> {
   render() {
     return (
       <div>
         <PageViewsDaily />
-        <div style={{paddingTop: 24}} />
+        <div className={styles.divider} />
         <PageViewsHourly />
-        <div style={{paddingTop: 24}} />
+        <div className={styles.divider} />
         <PageViewsMonthly />
       </div>
     );

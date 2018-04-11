@@ -6,14 +6,13 @@ import { Layout, Menu } from 'antd';
 import Logo from './components/Logo';
 import styles from './index.css';
 
-const { Sider } = Layout;
-
 type Props = {
   children?: React.Node,
 }
 
 class Sidebar extends React.Component<Props> {
   render() {
+    const { Sider } = Layout;
     let currentPage = window.location.pathname.substring(1);
     if (currentPage === '') {
       currentPage = 'summary';
@@ -21,7 +20,12 @@ class Sidebar extends React.Component<Props> {
     return (
       <Sider className={styles.sider}>
         <Logo />
-        <Menu className={styles.menu} theme="light" mode="inline" defaultSelectedKeys={[currentPage]}>
+        <Menu
+          defaultSelectedKeys={[currentPage]}
+          className={styles.menu}
+          theme="light"
+          mode="inline"
+        >
           {
             this.props.children
           }

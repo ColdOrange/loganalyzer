@@ -7,10 +7,10 @@ import 'antd/dist/antd.css';
 
 import Sidebar from './components/Sidebar';
 import Page from './components/Page';
-import Summary from  './components/Summary';
-import PageViews from  './components/PageViews';
-import UserViews from  './components/UserViews';
-import NotFound from  './components/NotFound';
+import Summary from './pages/Summary';
+import PageViews from './pages/PageViews';
+import UserViews from './pages/UserViews';
+import NotFound from './pages/NotFound';
 
 class App extends React.Component<{}> {
   render() {

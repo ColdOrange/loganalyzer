@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 
-import ContentCard from '../../../ContentCard';
-import CustomLineChart from '../../../CustomLineChart';
+import ContentCard from 'components/ContentCard';
+import CustomLineChart from 'components/CustomLineChart';
 import styles from './index.css';
 
 type State = {
@@ -15,15 +15,12 @@ type State = {
 }
 
 class PageViewsMonthly extends React.Component<{}, State> {
-  constructor() {
-    super();
-    this.state = {
-      data: [],
-      isLoaded: false,
-    };
-  }
+  state = {
+    data: [],
+    isLoaded: false,
+  };
 
-  loadData() {
+  loadData = () => {
     fetch('/api/page-views/monthly')
       .then(response => response.json())
       .then(  // TODO: handle error
@@ -34,16 +31,28 @@ class PageViewsMonthly extends React.Component<{}, State> {
           });
         }
       );
-  }
+  };
 
   componentDidMount() {
     this.loadData();
   }
 
   render() {
-    // const loading = !this.state.isLoaded; // TODO: unused
+    const loading = !this.state.isLoaded;
+    const placeholder = // placeholder for rendering while loading
+      <CustomLineChart
+        data={[]}
+        xAxisKey="time"
+        lineKey="pv"
+        color="#8884d8"
+      />;
+
     return (
-      <ContentCard title="Monthly">
+      <ContentCard
+        title="Monthly"
+        loading={loading}
+        placeholder={placeholder}
+      >
         <div className={styles.container}>
           <CustomLineChart
             data={this.state.data}
