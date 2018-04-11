@@ -7,6 +7,10 @@ import ContentCard from 'components/ContentCard';
 import CustomLineChart from 'components/CustomLineChart';
 import styles from './index.css';
 
+type Props = {
+  errorHandler: () => void,
+}
+
 type State = {
   days: string[],
   data: {
@@ -16,7 +20,7 @@ type State = {
   isLoaded: boolean,
 }
 
-class PageViewsHourly extends React.Component<{}, State> {
+class PageViewsHourly extends React.Component<Props, State> {
   state = {
     days: [],
     data: [],
@@ -26,25 +30,45 @@ class PageViewsHourly extends React.Component<{}, State> {
   loadData = (date: string) => {
     fetch(`/api/page-views/hourly?date=${date}`)
       .then(response => response.json())
-      .then(  // TODO: handle error
-        data => { // TODO: handle server api error (status: failed)
-          this.setState({
-            data: data,
-            isLoaded: true,
-          });
+      .then(
+        data => {
+          if (data.status === 'failed') { // Server API error
+            this.props.errorHandler();
+            console.log('Server API error');
+          }
+          else {
+            this.setState({
+              data: data,
+              isLoaded: true,
+            });
+          }
+        },
+        error => { // Fetch error
+          this.props.errorHandler();
+          console.log(error);
         }
       );
   };
 
   componentDidMount() {
-    fetch('/api/page-views/daily')
+    fetch('/api/page-views/daily')  // TODO: only fetch once?
       .then(response => response.json())
       .then(
         data => {
-          this.setState({
-            days: data.map(item => item.time)
-          });
-          this.loadData(this.state.days[0]);
+          if (data.status === 'failed') { // Server API error
+            this.props.errorHandler();
+            console.log('Server API error');
+          }
+          else {
+            this.setState({
+              days: data.map(item => item.time)
+            });
+            this.loadData(this.state.days[0]);
+          }
+        },
+        error => { // Fetch error
+          this.props.errorHandler();
+          console.log(error);
         }
       );
   }

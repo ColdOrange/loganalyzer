@@ -4,6 +4,7 @@ import * as React from 'react';
 
 import ContentCard from 'components/ContentCard';
 import KVCard from './components/KVCard';
+import { fetchError } from '../../utils/Modal';
 
 type State = {
   fileName: string,
@@ -31,7 +32,7 @@ class Summary extends React.Component<{}, State> {
       'End Time': data.end_time,
     };
     // Page Views
-    const durationMs = new Date(data.end_time) - new Date(data.start_time);
+    const durationMs = new Date(data.end_time.replace(' ', 'T')) - new Date(data.start_time.replace(' ', 'T')); // replace... is workaround for safari
     const durationDay = durationMs / 1000 / 3600 / 24;
     const pageViews = {
       'Total Page Views': data.page_views,
@@ -62,9 +63,19 @@ class Summary extends React.Component<{}, State> {
   loadData = () => {
     fetch('/api/summary')
       .then(response => response.json())
-      .then(  // TODO: handle error
-        data => { // TODO: handle server api error (status: failed)
-          this.processData(data);
+      .then(
+        data => {
+          if (data.status === 'failed') { // Server API error
+            fetchError();
+            console.log('Server API error');
+          }
+          else {
+            this.processData(data);
+          }
+        },
+        error => { // Fetch error
+          fetchError();
+          console.log(error);
         }
       );
   };

@@ -6,6 +6,10 @@ import ContentCard from 'components/ContentCard';
 import CustomLineChart from 'components/CustomLineChart';
 import styles from './index.css';
 
+type Props = {
+  errorHandler: () => void,
+}
+
 type State = {
   data: {
     time: string,
@@ -14,7 +18,7 @@ type State = {
   isLoaded: boolean,
 }
 
-class PageViewsMonthly extends React.Component<{}, State> {
+class PageViewsMonthly extends React.Component<Props, State> {
   state = {
     data: [],
     isLoaded: false,
@@ -23,12 +27,22 @@ class PageViewsMonthly extends React.Component<{}, State> {
   loadData = () => {
     fetch('/api/page-views/monthly')
       .then(response => response.json())
-      .then(  // TODO: handle error
-        data => { // TODO: handle server api error (status: failed)
-          this.setState({
-            data: data,
-            isLoaded: true,
-          });
+      .then(
+        data => {
+          if (data.status === 'failed') { // Server API error
+            this.props.errorHandler();
+            console.log('Server API error');
+          }
+          else {
+            this.setState({
+              data: data,
+              isLoaded: true,
+            });
+          }
+        },
+        error => { // Fetch error
+          this.props.errorHandler();
+          console.log(error);
         }
       );
   };
