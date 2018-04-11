@@ -1,5 +1,6 @@
 .page {
   margin-left: 200px;
+  height: 100vh; /* TODO: smooth scroll */
 }
 
 .header {
