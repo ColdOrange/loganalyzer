@@ -4,7 +4,8 @@ import * as React from 'react';
 
 import ContentCard from 'components/ContentCard';
 import KVCard from './components/KVCard';
-import { fetchError } from '../../utils/Modal';
+import { fetchError } from 'utils/Modal';
+import { bandwidthFormatter } from 'utils/BandwidthFormatter';
 
 type State = {
   fileName: string,
@@ -46,9 +47,9 @@ class Summary extends React.Component<{}, State> {
     };
     // Bandwidth
     const bandwidth = {
-      'Total Bandwidth': bandwidthToString(data.bandwidth),
-      'Average Bandwidth per Day': bandwidthToString(data.bandwidth / durationDay),
-      'Average Bandwidth per User': bandwidthToString(data.bandwidth / data.user_views),
+      'Total Bandwidth': bandwidthFormatter(data.bandwidth),
+      'Average Bandwidth per Day': bandwidthFormatter(data.bandwidth / durationDay),
+      'Average Bandwidth per User': bandwidthFormatter(data.bandwidth / data.user_views),
     };
     this.setState({
       fileName: data.file_name,
@@ -112,22 +113,6 @@ class Summary extends React.Component<{}, State> {
     );
   }
 }
-
-// Convert bandwidth (in Byte) to human readable string
-const bandwidthToString = (b: number): string => {
-  if (b < 1024) {
-    return b + ' B';
-  }
-  else if (b < 1024 * 1024) {
-    return (b / 1024).toFixed(2) + ' KB';
-  }
-  else if (b < 1024 * 1024 * 1024) {
-    return (b / 1024 / 1024).toFixed(2) + ' MB';
-  }
-  else {
-    return (b / 1024 / 1024 / 1024).toFixed(2) + ' GB';
-  }
-};
 
 // Map an object to a {key,value} object array
 const mapToKVArray = (o: Object): Object[] => {

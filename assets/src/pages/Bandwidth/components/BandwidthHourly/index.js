@@ -5,6 +5,7 @@ import { Select } from 'antd';
 
 import ContentCard from 'components/ContentCard';
 import CustomLineChart from 'components/CustomLineChart';
+import { bandwidthFormatter } from 'utils/BandwidthFormatter';
 import styles from './index.css';
 
 type Props = {
@@ -15,12 +16,12 @@ type State = {
   days: string[],
   data: {
     time: string,
-    uv: number,
+    bandwidth: number,
   }[],
   isLoaded: boolean,
 }
 
-class UserViewsHourly extends React.Component<Props, State> {
+class BandwidthHourly extends React.Component<Props, State> {
   state = {
     days: [],
     data: [],
@@ -28,7 +29,7 @@ class UserViewsHourly extends React.Component<Props, State> {
   };
 
   loadData = (date: string) => {
-    fetch(`/api/user-views/hourly?date=${date}`)
+    fetch(`/api/bandwidth/hourly?date=${date}`)
       .then(response => response.json())
       .then(
         data => {
@@ -51,7 +52,7 @@ class UserViewsHourly extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    fetch('/api/user-views/daily')  // TODO: only fetch once?
+    fetch('/api/bandwidth/daily')  // TODO: only fetch once?
       .then(response => response.json())
       .then(
         data => {
@@ -79,7 +80,7 @@ class UserViewsHourly extends React.Component<Props, State> {
       <CustomLineChart
         data={[]}
         xAxisKey="time"
-        lineKey="uv"
+        lineKey="bandwidth"
       />;
 
     return (
@@ -105,8 +106,10 @@ class UserViewsHourly extends React.Component<Props, State> {
           <CustomLineChart
             data={this.state.data}
             xAxisKey="time"
-            lineKey="uv"
-            color="#82ca9d"
+            lineKey="bandwidth"
+            color="#77aaff"
+            yAxisFormatter={(value: number) => bandwidthFormatter(value, 0)}
+            tooltipFormatter={(value: number) => bandwidthFormatter(value)}
           />
         </div>
       </ContentCard>
@@ -114,4 +117,4 @@ class UserViewsHourly extends React.Component<Props, State> {
   }
 }
 
-export default UserViewsHourly;
+export default BandwidthHourly;

@@ -10,6 +10,7 @@ import Page from './components/Page';
 import Summary from './pages/Summary';
 import PageViews from './pages/PageViews';
 import UserViews from './pages/UserViews';
+import Bandwidth from './pages/Bandwidth';
 import NotFound from './pages/NotFound';
 
 class App extends React.Component<{}> {
@@ -36,6 +37,12 @@ class App extends React.Component<{}> {
                 <span className="nav-text">User Views</span>
               </Link>
             </Menu.Item>
+            <Menu.Item key="bandwidth">
+              <Link to="bandwidth">
+                <Icon type="cloud-download-o" />
+                <span className="nav-text">Bandwidth</span>
+              </Link>
+            </Menu.Item>
           </Sidebar>
           <Page>
             <Switch>
@@ -43,6 +50,7 @@ class App extends React.Component<{}> {
               <Route path="/summary" component={Summary} />
               <Route path="/page-views" component={PageViews} />
               <Route path="/user-views" component={UserViews} />
+              <Route path="/bandwidth" component={Bandwidth} />
               <Route component={NotFound} />
             </Switch>
           </Page>

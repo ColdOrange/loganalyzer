@@ -58,7 +58,6 @@ class UserViewsDaily extends React.Component<Props, State> {
         data={[]}
         xAxisKey="time"
         lineKey="uv"
-        color="#77aaff"
       />;
 
     return (
@@ -72,7 +71,7 @@ class UserViewsDaily extends React.Component<Props, State> {
             data={this.state.data}
             xAxisKey="time"
             lineKey="uv"
-            color="#77aaff"
+            color="#82ca9d"
           />
         </div>
       </ContentCard>

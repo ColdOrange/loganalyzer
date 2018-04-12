@@ -80,7 +80,6 @@ class PageViewsHourly extends React.Component<Props, State> {
         data={[]}
         xAxisKey="time"
         lineKey="pv"
-        color="#8884d8"
       />;
 
     return (

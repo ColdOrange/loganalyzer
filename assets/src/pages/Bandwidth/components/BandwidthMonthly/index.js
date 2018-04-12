@@ -1,10 +1,10 @@
 // @flow
 
 import * as React from 'react';
-import { Select } from 'antd';
 
 import ContentCard from 'components/ContentCard';
 import CustomLineChart from 'components/CustomLineChart';
+import { bandwidthFormatter } from 'utils/BandwidthFormatter';
 import styles from './index.css';
 
 type Props = {
@@ -12,23 +12,21 @@ type Props = {
 }
 
 type State = {
-  days: string[],
   data: {
     time: string,
-    uv: number,
+    bandwidth: number,
   }[],
   isLoaded: boolean,
 }
 
-class UserViewsHourly extends React.Component<Props, State> {
+class BandWidthMonthly extends React.Component<Props, State> {
   state = {
-    days: [],
     data: [],
     isLoaded: false,
   };
 
-  loadData = (date: string) => {
-    fetch(`/api/user-views/hourly?date=${date}`)
+  loadData = () => {
+    fetch('/api/bandwidth/monthly')
       .then(response => response.json())
       .then(
         data => {
@@ -51,26 +49,7 @@ class UserViewsHourly extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    fetch('/api/user-views/daily')  // TODO: only fetch once?
-      .then(response => response.json())
-      .then(
-        data => {
-          if (data.status === 'failed') { // Server API error
-            this.props.errorHandler();
-            console.log('Server API error');
-          }
-          else {
-            this.setState({
-              days: data.map(item => item.time)
-            });
-            this.loadData(this.state.days[0]);
-          }
-        },
-        error => { // Fetch error
-          this.props.errorHandler();
-          console.log(error);
-        }
-      );
+    this.loadData();
   }
 
   render() {
@@ -79,34 +58,23 @@ class UserViewsHourly extends React.Component<Props, State> {
       <CustomLineChart
         data={[]}
         xAxisKey="time"
-        lineKey="uv"
+        lineKey="bandwidth"
       />;
 
     return (
       <ContentCard
-        title="Hourly"
+        title="Monthly"
         loading={loading}
         placeholder={placeholder}
       >
-        <Select
-          defaultValue={this.state.days[0]}
-          className={styles.select}
-          onChange={this.loadData}
-        >
-          {
-            this.state.days.map(date =>
-              <Select.Option key={date} value={date}>
-                {date}
-              </Select.Option>
-            )
-          }
-        </Select>
         <div className={styles.container}>
           <CustomLineChart
             data={this.state.data}
             xAxisKey="time"
-            lineKey="uv"
-            color="#82ca9d"
+            lineKey="bandwidth"
+            color="#77aaff"
+            yAxisFormatter={(value: number) => bandwidthFormatter(value, 0)}
+            tooltipFormatter={(value: number) => bandwidthFormatter(value)}
           />
         </div>
       </ContentCard>
@@ -114,4 +82,4 @@ class UserViewsHourly extends React.Component<Props, State> {
   }
 }
 
-export default UserViewsHourly;
+export default BandWidthMonthly;

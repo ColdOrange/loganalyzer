@@ -7,11 +7,14 @@ type Props = {
   data: any[],
   xAxisKey: string,
   lineKey: string,
-  color: string,
+  color?: string,
+  yAxisFormatter?: Function,
+  tooltipFormatter?: Function,
 }
 
 class CustomLineChart extends React.Component<Props> { // TODO: zoom (use HighCharts?)
   render() {
+    const { color = '#e5e5e5' } = this.props;
     return (
       <ResponsiveContainer minHeight={360}>
         <LineChart data={this.props.data}>
@@ -21,6 +24,7 @@ class CustomLineChart extends React.Component<Props> { // TODO: zoom (use HighCh
             tickLine={false}
           />
           <YAxis
+            tickFormatter={this.props.yAxisFormatter}
             axisLine={false}
             tickLine={false}
           />
@@ -31,12 +35,15 @@ class CustomLineChart extends React.Component<Props> { // TODO: zoom (use HighCh
           <Line
             dataKey={this.props.lineKey}
             type="monotone"
-            stroke={this.props.color}
+            stroke={color}
             strokeWidth={3}
-            dot={{ fill: this.props.color }}
+            dot={{ fill: color }}
             activeDot={{ r: 5, strokeWidth: 0 }}
           />
-          <Tooltip wrapperStyle={{ border: 'none', boxShadow: '4px 4px 40px rgba(0, 0, 0, 0.05)' }}/>
+          <Tooltip
+            formatter={this.props.tooltipFormatter}
+            wrapperStyle={{ border: 'none', boxShadow: '4px 4px 40px rgba(0, 0, 0, 0.05)' }}
+          />
         </LineChart>
       </ResponsiveContainer>
     );

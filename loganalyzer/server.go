@@ -6,11 +6,13 @@ import (
 	log "loganalyzer/loganalyzer/logging"
 )
 
+// Summary
 func handlerSummary(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(summary())
 }
 
+// Page Views
 func handlerPageViewsDaily(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(pageViewsDaily())
@@ -26,6 +28,7 @@ func handlerPageViewsMonthly(w http.ResponseWriter, _ *http.Request) {
 	w.Write(pageViewsMonthly())
 }
 
+// User Views
 func handlerUserViewsDaily(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(userViewsDaily())
@@ -41,6 +44,22 @@ func handlerUserViewsMonthly(w http.ResponseWriter, _ *http.Request) {
 	w.Write(userViewsMonthly())
 }
 
+// Bandwidth
+func handlerBandwidthDaily(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(bandwidthDaily())
+}
+
+func handlerBandwidthHourly(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(bandwidthHourly(r.URL.Query().Get("date")))
+}
+
+func handlerBandwidthMonthly(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(bandwidthMonthly())
+}
+
 func NewServer(addr string) *http.Server {
 	handler := NewHandler()
 	handler.Bind("/api/summary", handlerSummary)
@@ -50,6 +69,9 @@ func NewServer(addr string) *http.Server {
 	handler.Bind("/api/user-views/daily", handlerUserViewsDaily)
 	handler.Bind("/api/user-views/hourly", handlerUserViewsHourly)
 	handler.Bind("/api/user-views/monthly", handlerUserViewsMonthly)
+	handler.Bind("/api/bandwidth/daily", handlerBandwidthDaily)
+	handler.Bind("/api/bandwidth/hourly", handlerBandwidthHourly)
+	handler.Bind("/api/bandwidth/monthly", handlerBandwidthMonthly)
 
 	log.Infof("Server started listening on [%v]", addr)
 	return &http.Server{
