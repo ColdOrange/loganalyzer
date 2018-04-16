@@ -1,31 +1,30 @@
-DROP TABLE IF EXISTS log;
-
-# The table has the same format with `format.go`.
+# The table has the same format with constants in `format.go`.
 # DO NOT EDIT.
 
-CREATE TABLE log
+DROP TABLE IF EXISTS log;
+
+CREATE TABLE `log`
 (
-  id             INT(15) UNSIGNED AUTO_INCREMENT
+  `id`             int(15) unsigned NOT NULL AUTO_INCREMENT
     PRIMARY KEY,
-  ip             VARCHAR(46)  NULL,
-  time           DATETIME     NULL,
-  request_method VARCHAR(10)  NULL,
-  request_url    VARCHAR(255) NULL,
-  http_version   VARCHAR(10)  NULL,
-  response_code  VARCHAR(5)   NULL,
-  response_time  INT(10)      NULL,
-  content_size   INT(20)      NULL,
-  user_agent     VARCHAR(255) NULL,
-  referer        VARCHAR(255) NULL
+  `ip`             varchar(46)      DEFAULT NULL,
+  `time`           datetime         DEFAULT NULL,
+  `request_method` varchar(10)      DEFAULT NULL,
+  `url_path`       varchar(255)     DEFAULT NULL,
+  `url_query`      varchar(255)     DEFAULT NULL,
+  `url_is_static`  tinyint(1)       DEFAULT '0',
+  `http_version`   varchar(10)      DEFAULT NULL,
+  `response_code`  varchar(3)       DEFAULT NULL,
+  `response_time`  int(15) unsigned DEFAULT NULL,
+  `content_size`   int(15) unsigned DEFAULT NULL,
+  `user_agent`     varchar(255)     DEFAULT NULL,
+  `referer`        varchar(255)     DEFAULT NULL,
+
+  INDEX `ip` (`ip`),
+  INDEX `time` (`time`),
+  INDEX `url_path` (`url_path`),
+  INDEX `url_is_static` (`url_is_static`)
 )
   ENGINE = InnoDB
-  CHARSET = utf8;
-
-CREATE INDEX ip
-  ON log (ip);
-
-CREATE INDEX time
-  ON log (time);
-
-CREATE INDEX request_url
-  ON log (request_url);
+  CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;

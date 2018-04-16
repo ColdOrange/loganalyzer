@@ -9,11 +9,11 @@ import (
 )
 
 type Summary struct {
-	FileName  string  `json:"file_name"`
-	StartTime string  `json:"start_time"`
-	EndTime   string  `json:"end_time"`
-	PageViews int64   `json:"page_views"`
-	UserViews int64   `json:"user_views"`
+	FileName  string  `json:"fileName"`
+	StartTime string  `json:"startTime"`
+	EndTime   string  `json:"endTime"`
+	PageViews int64   `json:"pageViews"`
+	UserViews int64   `json:"userViews"`
 	Bandwidth float64 `json:"bandwidth"`
 }
 

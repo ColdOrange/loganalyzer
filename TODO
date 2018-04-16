@@ -1,6 +1,7 @@
 Frontend:
 1. config (theme, api, etc.)
 2. zoom line chart (maybe use HighCharts?)
+3. use redux store
 
 Backend:
 1. IP locator

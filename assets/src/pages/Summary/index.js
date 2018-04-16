@@ -29,30 +29,30 @@ class Summary extends React.Component<{}, State> {
   processData = (data: Object) => {
     // Time Range
     const timeRange = {
-      'Start Time': data.start_time,
-      'End Time': data.end_time,
+      'Start Time': data.startTime,
+      'End Time': data.endTime,
     };
     // Page Views
-    const durationMs = new Date(data.end_time.replace(' ', 'T')) - new Date(data.start_time.replace(' ', 'T')); // replace... is workaround for safari
+    const durationMs = new Date(data.endTime.replace(' ', 'T')) - new Date(data.startTime.replace(' ', 'T')); // replace... is workaround for safari
     const durationDay = durationMs / 1000 / 3600 / 24;
     const pageViews = {
-      'Total Page Views': data.page_views,
-      'Average Page Views per Day': Math.round(data.page_views / durationDay),
-      'Average Page Views per User': Math.round(data.page_views / data.user_views),
+      'Total Page Views': data.pageViews,
+      'Average Page Views per Day': Math.round(data.pageViews / durationDay),
+      'Average Page Views per User': Math.round(data.pageViews / data.userViews),
     };
     // User Views
     const userViews = {
-      'Total User Views': data.user_views,
-      'Average User Views per Day': Math.round(data.user_views / durationDay),
+      'Total User Views': data.userViews,
+      'Average User Views per Day': Math.round(data.userViews / durationDay),
     };
     // Bandwidth
     const bandwidth = {
       'Total Bandwidth': bandwidthFormatter(data.bandwidth),
       'Average Bandwidth per Day': bandwidthFormatter(data.bandwidth / durationDay),
-      'Average Bandwidth per User': bandwidthFormatter(data.bandwidth / data.user_views),
+      'Average Bandwidth per User': bandwidthFormatter(data.bandwidth / data.userViews),
     };
     this.setState({
-      fileName: data.file_name,
+      fileName: data.fileName,
       timeRange: timeRange,
       pageViews: pageViews,
       userViews: userViews,

@@ -5,20 +5,21 @@ import (
 	"database/sql"
 	"fmt"
 	"io"
+	"net/url"
 	"os"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	_ "github.com/go-sql-driver/mysql"
 	log "loganalyzer/loganalyzer/logging"
 )
 
 var (
-	config     Config
-	db         *sql.DB
-	fieldFlags = make(map[string]bool)
+	config Config
+	db     *sql.DB
 )
 
 func Analyze() {
@@ -27,9 +28,6 @@ func Analyze() {
 
 	// Load config
 	config = loadConfig()
-	for _, field := range config.LogFormat {
-		fieldFlags[field] = true
-	}
 	pattern, err := regexp.Compile(config.LogPattern)
 	if err != nil {
 		log.Fatalln("Log pattern compile error:", err)
@@ -86,16 +84,55 @@ ReadLog:
 		var values []interface{}
 		for j := 1; j <= len(config.LogFormat); j++ {
 			switch config.LogFormat[j-1] {
-			case "IP", "RequestMethod", "RequestURL", "HTTPVersion", "ResponseCode", "UserAgent", "Referer":
-				if len(fields[j]) > 255 {
-					log.Debugf("Log [%s] exceed max length at line %d, ignored", config.LogFormat[j-1], i)
+			case "IP":
+				if len(fields[j]) > 46 { // Max IPv6 length
+					log.Warnf("[IP] exceed max length (46, got %d) at line %d", len(fields[j]), i)
 					continue ReadLog
 				}
 				values = append(values, fields[j])
+			case "ResponseCode":
+				if len(fields[j]) > 3 { // HTTP Status Code length is always 3 as known
+					log.Warnf("[ResponseCode] exceed max length (5, got %d) at line %d", len(fields[j]), i)
+					continue ReadLog
+				}
+				values = append(values, fields[j])
+			case "RequestMethod", "HTTPVersion":
+				if len(fields[j]) > 10 { // Normal length shouldn't be larger
+					log.Debugf("[%s] exceed max length (10, got %d) at line %d", config.LogFormat[j-1], len(fields[j]), i)
+					continue ReadLog
+				}
+				values = append(values, fields[j])
+			case "UserAgent", "Referer":
+				if len(fields[j]) > 255 { // We set this threshold in purpose, these values can be madly long in fact
+					log.Debugf("[%s] exceed max length (255, got %d) at line %d", config.LogFormat[j-1], len(fields[j]), i)
+					continue ReadLog
+				}
+				values = append(values, fields[j])
+			case "RequestURL":
+				u, err := url.Parse(fields[j])
+				if err != nil {
+					log.Warnf("[RequestURL] format wrong at line %d", i)
+					continue ReadLog
+				}
+				if len(u.Path) > 255 { // We set this threshold in purpose, these values can be madly long in fact
+					log.Debugf("[RequestURL.Path] exceed max length (255, got %d) at line %d", len(u.Path), i)
+					continue ReadLog
+				}
+				if !utf8.ValidString(u.Path) {
+					log.Debugf("[RequestURL.Path] is not a valid utf8 string at line %d", i)
+					continue ReadLog
+				}
+				values = append(values, u.Path)
+				if len(u.RawQuery) > 255 { // We set this threshold in purpose, these values can be madly long in fact
+					log.Debugf("[RequestURL.Query] exceed max length (255, got %d) at line %d", len(u.RawQuery), i)
+					continue ReadLog
+				}
+				values = append(values, u.RawQuery)
+				values = append(values, isStatic(u.Path))
 			case "Time":
 				timestamp, err := time.Parse(config.TimeFormat, fields[j])
 				if err != nil {
-					log.Warnf("Log [Time] format wrong at line %d", i)
+					log.Warnf("[Time] format wrong at line %d", i)
 					continue ReadLog
 				}
 				values = append(values, timestamp)
@@ -107,7 +144,7 @@ ReadLog:
 				}
 				size, err := strconv.Atoi(fields[j])
 				if err != nil {
-					log.Warnf("Log [ContentSize] format wrong at line %d", i)
+					log.Warnf("[ContentSize] format wrong at line %d", i)
 					continue ReadLog
 				}
 				values = append(values, size)
@@ -117,7 +154,7 @@ ReadLog:
 		// Insert into DB
 		_, err = stmt.Exec(values...) // TODO: use Batch to improve performance
 		if err != nil {
-			log.Fatalln("DB insert stmt execute error:", err)
+			log.Warnf("DB insert stmt error at line %d: %v", i, err)
 		}
 	}
 
@@ -127,14 +164,32 @@ ReadLog:
 
 func prepareInsertStmt() string {
 	var fields, placeholders []string
-	for i, field := range LogFields {
-		if fieldFlags[field] {
-			fields = append(fields, DBFields[i])
-			placeholders = append(placeholders, "?")
-		}
+	for _, field := range config.LogFormat {
+		fields = append(fields, LogTableFields[field]...)
+	}
+	for i := 0; i < len(fields); i++ {
+		placeholders = append(placeholders, "?")
 	}
 
 	result := fmt.Sprintf("INSERT INTO log (%s) VALUES (%s)", strings.Join(fields, ","), strings.Join(placeholders, ","))
 	log.Debugln("Prepare Insert statement:", result)
 	return result
+}
+
+var nonStaticExt = []string{
+	"html", "htm", "shtml", "shtm", "xml", "php", "jsp", "asp", "aspx", "cgi", "perl", "do",
+}
+
+func isStatic(urlPath string) int {
+	if !strings.Contains(urlPath, ".") {
+		return 0
+	}
+	s := strings.Split(urlPath, ".")
+	ext := strings.ToLower(strings.Split(s[len(s)-1], " ")[0])
+	for _, e := range nonStaticExt {
+		if strings.HasPrefix(ext, e) {
+			return 0
+		}
+	}
+	return 1
 }

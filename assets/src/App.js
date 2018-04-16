@@ -11,6 +11,7 @@ import Summary from './pages/Summary';
 import PageViews from './pages/PageViews';
 import UserViews from './pages/UserViews';
 import Bandwidth from './pages/Bandwidth';
+import Request from './pages/Request';
 import NotFound from './pages/NotFound';
 
 class App extends React.Component<{}> {
@@ -43,6 +44,12 @@ class App extends React.Component<{}> {
                 <span className="nav-text">Bandwidth</span>
               </Link>
             </Menu.Item>
+            <Menu.Item key="request">
+              <Link to="request">
+                <Icon type="link" />
+                <span className="nav-text">Request</span>
+              </Link>
+            </Menu.Item>
           </Sidebar>
           <Page>
             <Switch>
@@ -51,6 +58,7 @@ class App extends React.Component<{}> {
               <Route path="/page-views" component={PageViews} />
               <Route path="/user-views" component={UserViews} />
               <Route path="/bandwidth" component={Bandwidth} />
+              <Route path="/request" component={Request} />
               <Route component={NotFound} />
             </Switch>
           </Page>

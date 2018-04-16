@@ -60,6 +60,22 @@ func handlerBandwidthMonthly(w http.ResponseWriter, _ *http.Request) {
 	w.Write(bandwidthMonthly())
 }
 
+// Request
+func handlerRequestMethod(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(requestMethod())
+}
+
+func handlerRequestURL(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(requestURL())
+}
+
+func handlerHTTPVersion(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(httpVersion())
+}
+
 func NewServer(addr string) *http.Server {
 	handler := NewHandler()
 	handler.Bind("/api/summary", handlerSummary)
@@ -72,6 +88,9 @@ func NewServer(addr string) *http.Server {
 	handler.Bind("/api/bandwidth/daily", handlerBandwidthDaily)
 	handler.Bind("/api/bandwidth/hourly", handlerBandwidthHourly)
 	handler.Bind("/api/bandwidth/monthly", handlerBandwidthMonthly)
+	handler.Bind("/api/request-method", handlerRequestMethod)
+	handler.Bind("/api/request-url", handlerRequestURL)
+	handler.Bind("/api/http-version", handlerHTTPVersion)
 
 	log.Infof("Server started listening on [%v]", addr)
 	return &http.Server{

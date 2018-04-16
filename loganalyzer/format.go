@@ -14,18 +14,18 @@ var LogFields = []string{
 	"Referer",
 }
 
-// Corresponding SQL fields
-var DBFields = []string{
-	"ip",
-	"time",
-	"request_method",
-	"request_url",
-	"http_version",
-	"response_code",
-	"response_time",
-	"content_size",
-	"user_agent",
-	"referer",
+// Corresponding DB table fields
+var LogTableFields = map[string][]string{
+	"IP":            {"ip"},
+	"Time":          {"time"},
+	"RequestMethod": {"request_method"},
+	"RequestURL":    {"url_path", "url_query", "url_is_static"},
+	"HTTPVersion":   {"http_version"},
+	"ResponseCode":  {"response_code"},
+	"ResponseTime":  {"response_time"},
+	"ContentSize":   {"content_size"},
+	"UserAgent":     {"user_agent"},
+	"Referer":       {"referer"},
 }
 
 // Time format, copy from golang `time` package.
