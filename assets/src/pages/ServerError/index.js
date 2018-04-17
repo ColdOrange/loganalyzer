@@ -19,7 +19,7 @@ class ServerError extends React.Component<{}> {
         <div className={styles.content}>
           <h1 className={styles.h1}>500</h1>
           <div className={styles.desc}>Internal Server Error</div>
-          <Link to={'/'}>
+          <Link to="/">
             <Button>Go Home</Button>
           </Link>
         </div>

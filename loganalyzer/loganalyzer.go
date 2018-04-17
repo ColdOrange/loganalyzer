@@ -45,8 +45,11 @@ func Analyze() {
 		log.Fatalln("DB truncate table error:", err)
 	}
 
-	// Prepare insert stmt
-	stmt, err := db.Prepare(prepareInsertStmt())
+	// Prepare `batch` insert stmt
+	const batchSize = 100
+	var batch = 0
+	var batchValues []interface{}
+	stmt, err := db.Prepare(prepareBatchInsertStmt(batchSize))
 	if err != nil {
 		log.Fatalln("DB insert stmt prepare error:", err)
 	}
@@ -62,7 +65,7 @@ func Analyze() {
 	// Read and process log file by line
 	reader := bufio.NewReader(file)
 ReadLog:
-	for i := 0; ; i++ {
+	for i := 1; ; i++ {
 		line, err := reader.ReadString('\n')
 		if err != nil {
 			if err != io.EOF {
@@ -151,10 +154,28 @@ ReadLog:
 			}
 		}
 
-		// Insert into DB
-		_, err = stmt.Exec(values...) // TODO: use Batch to improve performance
+		// Batch insert into DB
+		batch++
+		batchValues = append(batchValues, values...)
+		if batch == batchSize {
+			_, err = stmt.Exec(batchValues...)
+			if err != nil {
+				log.Errorf("DB batch insert error at line %d: %v", i, err)
+			}
+			batch = 0
+			batchValues = nil
+		}
+	}
+
+	if batch != 0 { // Last batch insert
+		stmt, err := db.Prepare(prepareBatchInsertStmt(batch))
 		if err != nil {
-			log.Warnf("DB insert stmt error at line %d: %v", i, err)
+			log.Fatalln("DB insert stmt prepare error:", err)
+		}
+		defer stmt.Close()
+		_, err = stmt.Exec(batchValues...)
+		if err != nil {
+			log.Errorln("DB last batch insert error:", err)
 		}
 	}
 
@@ -162,17 +183,24 @@ ReadLog:
 	log.Infof("Finished analyzing log file in %.3fs", time.Since(zero).Seconds())
 }
 
-func prepareInsertStmt() string {
-	var fields, placeholders []string
+func prepareBatchInsertStmt(batchSize int) string {
+	var fields []string
 	for _, field := range config.LogFormat {
 		fields = append(fields, LogTableFields[field]...)
 	}
+
+	placeholder := make([]string, len(fields))
 	for i := 0; i < len(fields); i++ {
-		placeholders = append(placeholders, "?")
+		placeholder[i] = "?"
+	}
+	placeholderString := "(" + strings.Join(placeholder, ",") + ")"
+	placeholders := make([]string, batchSize)
+	for i := 0; i < batchSize; i++ {
+		placeholders[i] = placeholderString
 	}
 
-	result := fmt.Sprintf("INSERT INTO log (%s) VALUES (%s)", strings.Join(fields, ","), strings.Join(placeholders, ","))
-	log.Debugln("Prepare Insert statement:", result)
+	result := fmt.Sprintf("INSERT INTO log (%s) VALUES %s", strings.Join(fields, ","), strings.Join(placeholders, ","))
+	//log.Debugln("Prepare Insert statement:", result)
 	return result
 }
 

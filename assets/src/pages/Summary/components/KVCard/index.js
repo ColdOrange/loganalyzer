@@ -25,7 +25,7 @@ class KVCard extends React.Component<Props> {
       >
         <Spin spinning={this.props.loading}>
           {
-            this.props.loading ? <KVTable data={[]} /> : <KVTable data={this.props.data}/>
+            this.props.loading ? <KVTable data={[]} /> : <KVTable data={this.props.data} />
           }
         </Spin>
       </Card>

@@ -19,7 +19,7 @@ class NotFound extends React.Component<{}> {
         <div className={styles.content}>
           <h1 className={styles.h1}>404</h1>
           <div className={styles.desc}>Page Not Found</div>
-          <Link to={'/'}>
+          <Link to="/">
             <Button>Go Home</Button>
           </Link>
         </div>
