@@ -4,17 +4,32 @@ import * as React from 'react';
 import { Table } from 'antd';
 
 import ContentCard from 'components/ContentCard';
+import { bandwidthFormatter } from 'utils/BandwidthFormatter';
 
 const columns = [
   {
     title: 'URL',
-    dataIndex: 'requestURL',
-    width: '60%',
+    dataIndex: 'url',
+    width: '55%',
   },
   {
-    title: 'Count',
-    dataIndex: 'count',
-    width: '40%',
+    title: 'PV',
+    dataIndex: 'pv',
+    width: '15%',
+    sorter: (a, b) => a.pv - b.pv,
+  },
+  {
+    title: 'UV',
+    dataIndex: 'uv',
+    width: '15%',
+    sorter: (a, b) => a.uv - b.uv,
+  },
+  {
+    title: 'Bandwidth',
+    dataIndex: 'bandwidth',
+    width: '15%',
+    render: value => bandwidthFormatter(value),
+    sorter: (a, b) => a.bandwidth - b.bandwidth,
   }
 ];
 
@@ -24,8 +39,10 @@ type Props = {
 
 type State = {
   data: {
-    requestURL: string,
-    count: number,
+    url: string,
+    pv: number,
+    uv: number,
+    bandwidth: number,
   }[],
   isLoaded: boolean,
 }
@@ -72,7 +89,7 @@ class RequestURL extends React.Component<Props, State> {
           dataSource={this.state.data}
           columns={columns}
           loading={loading}
-          rowKey="requestURL"
+          rowKey="url"
         />
       </ContentCard>
     );

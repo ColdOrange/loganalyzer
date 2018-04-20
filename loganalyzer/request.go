@@ -86,12 +86,14 @@ func httpVersion() []byte {
 }
 
 type RequestURL struct {
-	URL   string `json:"requestURL"`
-	Count int64  `json:"count"`
+	URL       string `json:"url"`
+	PV        int64  `json:"pv"`
+	UV        int64  `json:"uv"`
+	Bandwidth int64  `json:"bandwidth"`
 }
 
 func requestURL() []byte {
-	rows, err := db.Query("SELECT url_path, count(*) as count FROM log WHERE url_is_static='0' GROUP BY url_path ORDER BY count DESC")
+	rows, err := db.Query("SELECT url_path, count(*) as pv, count(distinct(ip)), sum(content_size) FROM log WHERE url_is_static='0' GROUP BY url_path ORDER BY pv DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)
@@ -100,15 +102,17 @@ func requestURL() []byte {
 	var (
 		requestURL []RequestURL
 		url        string
-		count      int64
+		pv         int64
+		uv         int64
+		bandwidth  int64
 	)
 	for rows.Next() {
-		err := rows.Scan(&url, &count)
+		err := rows.Scan(&url, &pv, &uv, &bandwidth)
 		if err != nil {
 			log.Errorln("DB query error:", err)
 			return []byte(`{"status": "failed"}`)
 		}
-		requestURL = append(requestURL, RequestURL{URL: url, Count: count})
+		requestURL = append(requestURL, RequestURL{URL: url, PV: pv, UV: uv, Bandwidth: bandwidth})
 	}
 	err = rows.Err()
 	if err != nil {
