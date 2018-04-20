@@ -6,6 +6,7 @@ import { Row, Col } from 'antd';
 import RequestMethod from './components/RequestMethod';
 import HTTPVersion from './components/HTTPVersion';
 import RequestURL from './components/RequestURL';
+import StaticFile from './components/StaticFile';
 import { fetchError } from 'utils/Modal';
 import styles from './index.css';
 
@@ -33,6 +34,8 @@ class Request extends React.Component<{}> {
         </Row>
         <div className={styles.divider} />
         <RequestURL errorHandler={this.errorHandler} />
+        <div className={styles.divider} />
+        <StaticFile errorHandler={this.errorHandler} />
       </div>
     );
   }

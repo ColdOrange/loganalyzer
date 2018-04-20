@@ -6,7 +6,7 @@ var logger *logrus.Logger
 
 func init() {
 	logger = logrus.New()
-	logger.Level = logrus.DebugLevel
+	//logger.Level = logrus.DebugLevel
 	//logger.Out, _ = os.OpenFile("log", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
 	logger.Formatter = &logrus.TextFormatter{
 		FullTimestamp:   true,

@@ -4,17 +4,33 @@ import * as React from 'react';
 import { Table } from 'antd';
 
 import ContentCard from 'components/ContentCard';
+import { bandwidthFormatter } from 'utils/BandwidthFormatter';
 
 const columns = [
   {
-    title: 'URL',
-    dataIndex: 'requestURL',
-    width: '60%',
+    title: 'File',
+    dataIndex: 'file',
+    width: '55%',
   },
   {
     title: 'Count',
     dataIndex: 'count',
-    width: '40%',
+    width: '15%',
+    sorter: (a, b) => a.count - b.count,
+  },
+  {
+    title: 'Size',
+    dataIndex: 'size',
+    width: '15%',
+    render: value => bandwidthFormatter(value),
+    sorter: (a, b) => a.size - b.size,
+  },
+  {
+    title: 'Bandwidth',
+    dataIndex: 'bandwidth',
+    width: '15%',
+    render: value => bandwidthFormatter(value),
+    sorter: (a, b) => a.bandwidth - b.bandwidth,
   }
 ];
 
@@ -24,20 +40,22 @@ type Props = {
 
 type State = {
   data: {
-    requestURL: string,
+    file: string,
     count: number,
+    size: number,
+    bandwidth: number,
   }[],
   isLoaded: boolean,
 }
 
-class RequestURL extends React.Component<Props, State> {
+class StaticFile extends React.Component<Props, State> {
   state = {
     data: [],
     isLoaded: false,
   };
 
   loadData = () => {
-    fetch('/api/request-url')
+    fetch('/api/static-file')
       .then(response => response.json())
       .then(
         data => {
@@ -67,16 +85,16 @@ class RequestURL extends React.Component<Props, State> {
     const loading = !this.state.isLoaded;
 
     return (
-      <ContentCard title="Request URL">
+      <ContentCard title="Static File">
         <Table
           dataSource={this.state.data}
           columns={columns}
           loading={loading}
-          rowKey="requestURL"
+          rowKey="file"
         />
       </ContentCard>
     );
   }
 }
 
-export default RequestURL;
+export default StaticFile;
