@@ -14,7 +14,7 @@ CREATE TABLE `log`
   `url_query`      varchar(255)     DEFAULT NULL,
   `url_is_static`  tinyint(1)       DEFAULT '0',
   `http_version`   varchar(10)      DEFAULT NULL,
-  `response_code`  varchar(3)       DEFAULT NULL,
+  `response_code`  int(3) unsigned  DEFAULT NULL,
   `response_time`  int(15) unsigned DEFAULT NULL,
   `content_size`   int(15) unsigned DEFAULT NULL,
   `user_agent`     varchar(255)     DEFAULT NULL,

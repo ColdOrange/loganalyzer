@@ -81,6 +81,12 @@ func handlerStaticFile(w http.ResponseWriter, _ *http.Request) {
 	w.Write(staticFile())
 }
 
+// Response
+func handlerStatusCode(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(statusCode())
+}
+
 func NewServer(addr string) *http.Server {
 	handler := NewHandler()
 	handler.Bind("/api/summary", handlerSummary)
@@ -97,6 +103,7 @@ func NewServer(addr string) *http.Server {
 	handler.Bind("/api/http-version", handlerHTTPVersion)
 	handler.Bind("/api/request-url", handlerRequestURL)
 	handler.Bind("/api/static-file", handlerStaticFile)
+	handler.Bind("/api/status-code", handlerStatusCode)
 
 	log.Infof("Server started listening on [%v]", addr)
 	return &http.Server{

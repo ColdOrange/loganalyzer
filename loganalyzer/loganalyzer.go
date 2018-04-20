@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"io"
+	"net/http"
 	"net/url"
 	"os"
 	"regexp"
@@ -94,11 +95,12 @@ ReadLog:
 				}
 				values = append(values, fields[j])
 			case "ResponseCode":
-				if len(fields[j]) > 3 { // HTTP Status Code length is always 3 as known
-					log.Warnf("[ResponseCode] exceed max length (5, got %d) at line %d", len(fields[j]), i)
+				code, err := strconv.Atoi(fields[j])
+				if err != nil || http.StatusText(code) == "" {
+					log.Warnf("[ResponseCode] format wrong at line %d", i)
 					continue ReadLog
 				}
-				values = append(values, fields[j])
+				values = append(values, code)
 			case "RequestMethod", "HTTPVersion":
 				if len(fields[j]) > 10 { // Normal length shouldn't be larger
 					log.Debugf("[%s] exceed max length (10, got %d) at line %d", config.LogFormat[j-1], len(fields[j]), i)
