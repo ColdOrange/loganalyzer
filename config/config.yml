@@ -1,8 +1,8 @@
 format:
-  logfile: /Users/Orange/Desktop/毕设/log/ssg-surfer/apache-access.log
+  logfile: /Users/Orange/Desktop/毕设/log/ssg-surfer/apache-access.log.gen
 
   # Log pattern, use regular expression.
-  logpattern: (.*) - - \[(.*)\] "(.*) (.*) (.*)" (.*) (.*) ".*" "(.*)"
+  logpattern: (.*) - - \[(.*)\] "(.*) (.*) (.*)" (.*) (.*) ".*" "(.*)" (.*)
 
   # Log format, see `format.go` for all supported items.
   logformat:
@@ -14,6 +14,7 @@ format:
     - ResponseCode
     - ContentSize
     - UserAgent
+    - ResponseTime
 
   # Time format in log, only used if `Time` field is set.
   # Note:

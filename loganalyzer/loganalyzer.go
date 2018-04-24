@@ -142,6 +142,16 @@ ReadLog:
 				}
 				values = append(values, timestamp)
 			case "ResponseTime":
+				if fields[j] == "-" {
+					values = append(values, 0)
+					continue
+				}
+				responseTime, err := strconv.Atoi(fields[j])
+				if err != nil {
+					log.Warnf("[ResponseTime] format wrong at line %d", i)
+					continue ReadLog
+				}
+				values = append(values, responseTime)
 			case "ContentSize":
 				if fields[j] == "-" {
 					values = append(values, 0)

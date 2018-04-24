@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Row, Col } from 'antd';
 
 import StatusCode from './components/StatusCode';
+import ResponseTime from './components/ResponseTime';
 import { fetchError } from 'utils/Modal';
 import styles from './index.css';
 
@@ -26,6 +27,7 @@ class Request extends React.Component<{}> {
             <StatusCode errorHandler={this.errorHandler} />
           </Col>
           <Col span={12}>
+            <ResponseTime errorHandler={this.errorHandler} />
           </Col>
         </Row>
       </div>

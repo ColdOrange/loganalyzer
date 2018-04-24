@@ -26,13 +26,13 @@ class CustomPieChart extends React.Component<Props, State> {
 
   render() {
     return (
-      <ResponsiveContainer minHeight={240}>
+      <ResponsiveContainer minHeight={260}>
         <PieChart>
           <Pie
             data={this.props.data}
             nameKey={this.props.nameKey}
             dataKey={this.props.dataKey}
-            innerRadius={70}
+            innerRadius={75}
             activeIndex={this.state.activeIndex}
             activeShape={(props: any) => renderActiveShape(props, this.props.nameKey)}
             onMouseEnter={this.onMouseEnter}
