@@ -2,6 +2,7 @@ package loganalyzer
 
 import (
 	"encoding/json"
+	"os"
 	"path/filepath"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -10,6 +11,7 @@ import (
 
 type Summary struct {
 	FileName  string  `json:"fileName"`
+	FileSize  int64   `json:"fileSize"`
 	StartTime string  `json:"startTime"`
 	EndTime   string  `json:"endTime"`
 	PageViews int64   `json:"pageViews"`
@@ -21,8 +23,21 @@ func summary() []byte {
 	var summary Summary
 	_, summary.FileName = filepath.Split(config.LogFile)
 
+	file, err := os.Open(config.LogFile)
+	if err != nil {
+		log.Errorln("Log file open error:", err)
+		return []byte(`{"status": "failed"}`)
+	}
+	defer file.Close()
+	stat, err := file.Stat()
+	if err != nil {
+		log.Errorln("Get file stat error:", err)
+		return []byte(`{"status": "failed"}`)
+	}
+	summary.FileSize = stat.Size()
+
 	row := db.QueryRow("SELECT time FROM log ORDER BY id LIMIT 1")
-	err := row.Scan(&summary.StartTime)
+	err = row.Scan(&summary.StartTime)
 	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)

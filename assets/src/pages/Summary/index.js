@@ -8,7 +8,7 @@ import { fetchError } from 'utils/Modal';
 import { bandwidthFormatter } from 'utils/BandwidthFormatter';
 
 type State = {
-  fileName: string,
+  logFile: { [string]: any },
   timeRange: { [string]: any },
   pageViews: { [string]: any },
   userViews: { [string]: any },
@@ -18,7 +18,7 @@ type State = {
 
 class Summary extends React.Component<{}, State> {
   state = {
-    fileName: '',
+    logFile: {},
     timeRange: {},
     pageViews: {},
     userViews: {},
@@ -27,6 +27,11 @@ class Summary extends React.Component<{}, State> {
   };
 
   processData = (data: Object) => {
+    // Log File
+    const logFile = {
+      'File Name': data.fileName,
+      'File Size': bandwidthFormatter(data.fileSize),
+    };
     // Time Range
     const timeRange = {
       'Start Time': data.startTime,
@@ -52,7 +57,7 @@ class Summary extends React.Component<{}, State> {
       'Average Bandwidth per User': bandwidthFormatter(data.bandwidth / data.userViews),
     };
     this.setState({
-      fileName: data.fileName,
+      logFile: logFile,
       timeRange: timeRange,
       pageViews: pageViews,
       userViews: userViews,
@@ -88,7 +93,12 @@ class Summary extends React.Component<{}, State> {
   render() {
     const loading = !this.state.isLoaded;
     return (
-      <ContentCard title={this.state.fileName}>
+      <ContentCard title="Summary">
+        <KVCard
+          title="Log File"
+          loading={loading}
+          data={mapToKVArray(this.state.logFile)}
+        />
         <KVCard
           title="Time Range"
           loading={loading}
