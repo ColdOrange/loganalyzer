@@ -98,3 +98,46 @@ func responseTime() []byte {
 	}
 	return data
 }
+
+type ResponseURL struct {
+	URL    string `json:"url"`
+	PV     int64  `json:"pv"`
+	Avg    int64  `json:"avg"`
+	StdDev int64  `json:"stdDev"`
+}
+
+func responseURL() []byte {
+	rows, err := db.Query("SELECT url_path, COUNT(*) AS pv, AVG(response_time), STD(response_time) FROM log WHERE url_is_static='0' GROUP BY url_path ORDER BY pv DESC")
+	if err != nil {
+		log.Errorln("DB query error:", err)
+		return []byte(`{"status": "failed"}`)
+	}
+
+	var (
+		responseURL []ResponseURL
+		url         string
+		pv          int64
+		avg         float64
+		stdDev      float64
+	)
+	for rows.Next() {
+		err := rows.Scan(&url, &pv, &avg, &stdDev)
+		if err != nil {
+			log.Errorln("DB query error:", err)
+			return []byte(`{"status": "failed"}`)
+		}
+		responseURL = append(responseURL, ResponseURL{URL: url, PV: pv, Avg: int64(avg), StdDev: int64(stdDev)})
+	}
+	err = rows.Err()
+	if err != nil {
+		log.Errorln("DB query error:", err)
+		return []byte(`{"status": "failed"}`)
+	}
+
+	data, err := json.Marshal(responseURL)
+	if err != nil {
+		log.Errorln("ResponseURL json marshal error:", err)
+		return []byte(`{"status": "failed"}`)
+	}
+	return data
+}

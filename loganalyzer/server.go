@@ -92,6 +92,11 @@ func handlerResponseTime(w http.ResponseWriter, _ *http.Request) {
 	w.Write(responseTime())
 }
 
+func handlerResponseURL(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(responseURL())
+}
+
 func NewServer(addr string) *http.Server {
 	handler := NewHandler()
 	handler.Bind("/api/summary", handlerSummary)
@@ -110,6 +115,7 @@ func NewServer(addr string) *http.Server {
 	handler.Bind("/api/static-file", handlerStaticFile)
 	handler.Bind("/api/status-code", handlerStatusCode)
 	handler.Bind("/api/response-time", handlerResponseTime)
+	handler.Bind("/api/response-url", handlerResponseURL)
 
 	log.Infof("Server started listening on [%v]", addr)
 	return &http.Server{

@@ -61,7 +61,7 @@ class ResponseTime extends React.Component<Props, State> {
 
     return (
       <ContentCard
-        title="ResponseTime"
+        title="Response Time"
         loading={loading}
         placeholder={placeholder}
       >
