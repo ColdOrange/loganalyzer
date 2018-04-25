@@ -17,7 +17,9 @@ CREATE TABLE `log`
   `response_code`  int(3) unsigned  DEFAULT NULL,
   `response_time`  int(15) unsigned DEFAULT NULL,
   `content_size`   int(15) unsigned DEFAULT NULL,
-  `user_agent`     varchar(255)     DEFAULT NULL,
+  `ua_browser`     varchar(255)     DEFAULT NULL,
+  `ua_os`          varchar(255)     DEFAULT NULL,
+  `ua_device`      varchar(255)     DEFAULT NULL,
   `referer`        varchar(255)     DEFAULT NULL,
 
   INDEX `ip` (`ip`),

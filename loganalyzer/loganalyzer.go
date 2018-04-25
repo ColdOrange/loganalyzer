@@ -14,6 +14,7 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/avct/uasurfer"
 	_ "github.com/go-sql-driver/mysql"
 	log "loganalyzer/loganalyzer/logging"
 )
@@ -94,22 +95,16 @@ ReadLog:
 					continue ReadLog
 				}
 				values = append(values, fields[j])
-			case "ResponseCode":
-				code, err := strconv.Atoi(fields[j])
-				if err != nil || http.StatusText(code) == "" {
-					log.Warnf("[ResponseCode] format wrong at line %d", i)
+			case "Time":
+				timestamp, err := time.Parse(config.TimeFormat, fields[j])
+				if err != nil {
+					log.Warnf("[Time] format wrong at line %d", i)
 					continue ReadLog
 				}
-				values = append(values, code)
+				values = append(values, timestamp)
 			case "RequestMethod", "HTTPVersion":
-				if len(fields[j]) > 10 { // Normal length shouldn't be larger
+				if len(fields[j]) > 10 {
 					log.Debugf("[%s] exceed max length (10, got %d) at line %d", config.LogFormat[j-1], len(fields[j]), i)
-					continue ReadLog
-				}
-				values = append(values, fields[j])
-			case "UserAgent", "Referer":
-				if len(fields[j]) > 255 { // We set this threshold in purpose, these values can be madly long in fact
-					log.Debugf("[%s] exceed max length (255, got %d) at line %d", config.LogFormat[j-1], len(fields[j]), i)
 					continue ReadLog
 				}
 				values = append(values, fields[j])
@@ -119,7 +114,7 @@ ReadLog:
 					log.Warnf("[RequestURL] format wrong at line %d", i)
 					continue ReadLog
 				}
-				if len(u.Path) > 255 { // We set this threshold in purpose, these values can be madly long in fact
+				if len(u.Path) > 255 {
 					log.Debugf("[RequestURL.Path] exceed max length (255, got %d) at line %d", len(u.Path), i)
 					continue ReadLog
 				}
@@ -128,19 +123,19 @@ ReadLog:
 					continue ReadLog
 				}
 				values = append(values, u.Path)
-				if len(u.RawQuery) > 255 { // We set this threshold in purpose, these values can be madly long in fact
+				if len(u.RawQuery) > 255 {
 					log.Debugf("[RequestURL.Query] exceed max length (255, got %d) at line %d", len(u.RawQuery), i)
 					continue ReadLog
 				}
 				values = append(values, u.RawQuery)
 				values = append(values, isStatic(u.Path))
-			case "Time":
-				timestamp, err := time.Parse(config.TimeFormat, fields[j])
-				if err != nil {
-					log.Warnf("[Time] format wrong at line %d", i)
+			case "ResponseCode":
+				code, err := strconv.Atoi(fields[j])
+				if err != nil || http.StatusText(code) == "" {
+					log.Warnf("[ResponseCode] format wrong at line %d", i)
 					continue ReadLog
 				}
-				values = append(values, timestamp)
+				values = append(values, code)
 			case "ResponseTime":
 				if fields[j] == "-" {
 					values = append(values, 0)
@@ -163,6 +158,32 @@ ReadLog:
 					continue ReadLog
 				}
 				values = append(values, size)
+			case "UserAgent":
+				ua := uasurfer.Parse(fields[j])
+				uaBrowser := ua.Browser.Name.String()[7:] // remove prefix 'Browser'
+				if len(uaBrowser) > 255 {
+					log.Debugf("[UserAgent.Browser] exceed max length (255, got %d) at line %d", len(uaBrowser), i)
+					continue ReadLog
+				}
+				values = append(values, uaBrowser)
+				uaOS := ua.OS.Name.String()[2:] // remove prefix 'OS'
+				if len(uaOS) > 255 {
+					log.Debugf("[UserAgent.OS] exceed max length (255, got %d) at line %d", len(uaOS), i)
+					continue ReadLog
+				}
+				values = append(values, uaOS)
+				uaDevice := ua.DeviceType.String()[6:] // remove prefix 'Device'
+				if len(uaDevice) > 255 {
+					log.Debugf("[UserAgent.OS] exceed max length (255, got %d) at line %d", len(uaDevice), i)
+					continue ReadLog
+				}
+				values = append(values, uaDevice)
+			case "Referer":
+				if len(fields[j]) > 255 {
+					log.Debugf("[%s] exceed max length (255, got %d) at line %d", config.LogFormat[j-1], len(fields[j]), i)
+					continue ReadLog
+				}
+				values = append(values, fields[j])
 			}
 		}
 

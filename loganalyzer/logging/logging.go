@@ -1,17 +1,45 @@
 package logging
 
-import "github.com/sirupsen/logrus"
+import (
+	"os"
+	"strings"
+
+	"github.com/sirupsen/logrus"
+)
 
 var logger *logrus.Logger
 
 func init() {
 	logger = logrus.New()
-	//logger.Level = logrus.DebugLevel
-	//logger.Out, _ = os.OpenFile("log", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
 	logger.Formatter = &logrus.TextFormatter{
 		FullTimestamp:   true,
 		TimestampFormat: "2006-01-02 15:04:05",
 	}
+}
+
+func SetLevel(level string) {
+	switch strings.ToLower(level) {
+	case "panic":
+		logger.Level = logrus.PanicLevel
+	case "fatal":
+		logger.Level = logrus.FatalLevel
+	case "error":
+		logger.Level = logrus.ErrorLevel
+	case "warn":
+		logger.Level = logrus.WarnLevel
+	case "debug":
+		logger.Level = logrus.DebugLevel
+	default:
+		logger.Level = logrus.InfoLevel
+	}
+}
+
+func SetOutputFile(file string) {
+	logFile, err := os.OpenFile(file, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
+	if err != nil {
+		logger.Fatalln("Open log file error:", err)
+	}
+	logger.Out = logFile
 }
 
 func Debug(args ...interface{}) {

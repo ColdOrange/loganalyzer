@@ -13,6 +13,7 @@ import UserViews from './pages/UserViews';
 import Bandwidth from './pages/Bandwidth';
 import Request from './pages/Request';
 import Response from './pages/Response';
+import UserAgent from './pages/UserAgent';
 import NotFound from './pages/NotFound';
 
 class App extends React.Component<{}> {
@@ -57,6 +58,12 @@ class App extends React.Component<{}> {
                 <span className="nav-text">Response</span>
               </Link>
             </Menu.Item>
+            <Menu.Item key="user-agent">
+              <Link to="user-agent">
+                <Icon type="compass" />
+                <span className="nav-text">User Agent</span>
+              </Link>
+            </Menu.Item>
           </Sidebar>
           <Page>
             <Switch>
@@ -67,6 +74,7 @@ class App extends React.Component<{}> {
               <Route path="/bandwidth" component={Bandwidth} />
               <Route path="/request" component={Request} />
               <Route path="/response" component={Response} />
+              <Route path="/user-agent" component={UserAgent} />
               <Route component={NotFound} />
             </Switch>
           </Page>

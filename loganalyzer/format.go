@@ -24,7 +24,7 @@ var LogTableFields = map[string][]string{
 	"ResponseCode":  {"response_code"},
 	"ResponseTime":  {"response_time"},
 	"ContentSize":   {"content_size"},
-	"UserAgent":     {"user_agent"},
+	"UserAgent":     {"ua_browser", "ua_os", "ua_device"},
 	"Referer":       {"referer"},
 }
 

@@ -1,8 +1,19 @@
 package main
 
 import (
+	"flag"
+
 	"loganalyzer/loganalyzer"
+	log "loganalyzer/loganalyzer/logging"
 )
+
+func init() {
+	debug := flag.Bool("d", false, "Print debug level logs")
+	flag.Parse()
+	if *debug {
+		log.SetLevel("Debug")
+	}
+}
 
 func main() {
 	loganalyzer.Analyze()

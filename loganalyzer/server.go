@@ -97,6 +97,22 @@ func handlerResponseURL(w http.ResponseWriter, _ *http.Request) {
 	w.Write(responseURL())
 }
 
+// User Agent
+func handlerOperatingSystem(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(operatingSystem())
+}
+
+func handlerDevice(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(device())
+}
+
+func handlerBrowser(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(browser())
+}
+
 func NewServer(addr string) *http.Server {
 	handler := NewHandler()
 	handler.Bind("/api/summary", handlerSummary)
@@ -116,6 +132,9 @@ func NewServer(addr string) *http.Server {
 	handler.Bind("/api/status-code", handlerStatusCode)
 	handler.Bind("/api/response-time", handlerResponseTime)
 	handler.Bind("/api/response-url", handlerResponseURL)
+	handler.Bind("/api/user-agent/os", handlerOperatingSystem)
+	handler.Bind("/api/user-agent/device", handlerDevice)
+	handler.Bind("/api/user-agent/browser", handlerBrowser)
 
 	log.Infof("Server started listening on [%v]", addr)
 	return &http.Server{
