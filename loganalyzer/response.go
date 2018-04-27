@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	_ "github.com/go-sql-driver/mysql"
 	log "loganalyzer/loganalyzer/logging"
 )
 

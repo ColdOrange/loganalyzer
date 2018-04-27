@@ -6,122 +6,256 @@ import (
 	log "loganalyzer/loganalyzer/logging"
 )
 
+var cache *Cache
+
 // Summary
-func handlerSummary(w http.ResponseWriter, _ *http.Request) {
+func handlerSummary(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(summary())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := summary()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
 // Page Views
-func handlerPageViewsDaily(w http.ResponseWriter, _ *http.Request) {
+func handlerPageViewsDaily(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(pageViewsDaily())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := pageViewsDaily()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
 func handlerPageViewsHourly(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(pageViewsHourly(r.URL.Query().Get("date")))
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := pageViewsHourly(r.URL.Query().Get("date"))
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
-func handlerPageViewsMonthly(w http.ResponseWriter, _ *http.Request) {
+func handlerPageViewsMonthly(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(pageViewsMonthly())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := pageViewsMonthly()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
 // User Views
-func handlerUserViewsDaily(w http.ResponseWriter, _ *http.Request) {
+func handlerUserViewsDaily(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(userViewsDaily())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := userViewsDaily()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
 func handlerUserViewsHourly(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(userViewsHourly(r.URL.Query().Get("date")))
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := userViewsHourly(r.URL.Query().Get("date"))
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
-func handlerUserViewsMonthly(w http.ResponseWriter, _ *http.Request) {
+func handlerUserViewsMonthly(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(userViewsMonthly())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := userViewsMonthly()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
 // Bandwidth
-func handlerBandwidthDaily(w http.ResponseWriter, _ *http.Request) {
+func handlerBandwidthDaily(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(bandwidthDaily())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := bandwidthDaily()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
 func handlerBandwidthHourly(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(bandwidthHourly(r.URL.Query().Get("date")))
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := bandwidthHourly(r.URL.Query().Get("date"))
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
-func handlerBandwidthMonthly(w http.ResponseWriter, _ *http.Request) {
+func handlerBandwidthMonthly(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(bandwidthMonthly())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := bandwidthMonthly()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
 // Request
-func handlerRequestMethod(w http.ResponseWriter, _ *http.Request) {
+func handlerRequestMethod(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(requestMethod())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := requestMethod()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
-func handlerHTTPVersion(w http.ResponseWriter, _ *http.Request) {
+func handlerHTTPVersion(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(httpVersion())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := httpVersion()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
-func handlerRequestURL(w http.ResponseWriter, _ *http.Request) {
+func handlerRequestURL(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(requestURL())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := requestURL()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
-func handlerStaticFile(w http.ResponseWriter, _ *http.Request) {
+func handlerStaticFile(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(staticFile())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := staticFile()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
 // Response
-func handlerStatusCode(w http.ResponseWriter, _ *http.Request) {
+func handlerStatusCode(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(statusCode())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := statusCode()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
-func handlerResponseTime(w http.ResponseWriter, _ *http.Request) {
+func handlerResponseTime(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(responseTime())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := responseTime()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
-func handlerResponseURL(w http.ResponseWriter, _ *http.Request) {
+func handlerResponseURL(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(responseURL())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := responseURL()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
 // User Agent
-func handlerOperatingSystem(w http.ResponseWriter, _ *http.Request) {
+func handlerOperatingSystem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(operatingSystem())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := operatingSystem()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
-func handlerDevice(w http.ResponseWriter, _ *http.Request) {
+func handlerDevice(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(device())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := device()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
-func handlerBrowser(w http.ResponseWriter, _ *http.Request) {
+func handlerBrowser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(browser())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := browser()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
 // Referer
-func handlerReferringSite(w http.ResponseWriter, _ *http.Request) {
+func handlerReferringSite(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(referringSite())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := referringSite()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
-func handlerReferringURL(w http.ResponseWriter, _ *http.Request) {
+func handlerReferringURL(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(referringURL())
+	if cache.Exist(r.RequestURI) {
+		w.Write(cache.Get(r.RequestURI))
+	} else {
+		value := responseURL()
+		w.Write(value)
+		cache.Set(r.RequestURI, value)
+	}
 }
 
 func NewServer(addr string) *http.Server {
@@ -148,6 +282,8 @@ func NewServer(addr string) *http.Server {
 	handler.Bind("/api/user-agent/browser", handlerBrowser)
 	handler.Bind("/api/referer/site", handlerReferringSite)
 	handler.Bind("/api/referer/url", handlerReferringURL)
+
+	cache = NewCache()
 
 	log.Infof("Server started listening on [%v]", addr)
 	return &http.Server{

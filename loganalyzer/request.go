@@ -3,7 +3,6 @@ package loganalyzer
 import (
 	"encoding/json"
 
-	_ "github.com/go-sql-driver/mysql"
 	log "loganalyzer/loganalyzer/logging"
 )
 
