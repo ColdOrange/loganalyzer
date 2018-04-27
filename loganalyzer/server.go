@@ -113,6 +113,17 @@ func handlerBrowser(w http.ResponseWriter, _ *http.Request) {
 	w.Write(browser())
 }
 
+// Referer
+func handlerReferringSite(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(referringSite())
+}
+
+func handlerReferringURL(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(referringURL())
+}
+
 func NewServer(addr string) *http.Server {
 	handler := NewHandler()
 	handler.Bind("/api/summary", handlerSummary)
@@ -135,6 +146,8 @@ func NewServer(addr string) *http.Server {
 	handler.Bind("/api/user-agent/os", handlerOperatingSystem)
 	handler.Bind("/api/user-agent/device", handlerDevice)
 	handler.Bind("/api/user-agent/browser", handlerBrowser)
+	handler.Bind("/api/referer/site", handlerReferringSite)
+	handler.Bind("/api/referer/url", handlerReferringURL)
 
 	log.Infof("Server started listening on [%v]", addr)
 	return &http.Server{

@@ -179,11 +179,34 @@ ReadLog:
 				}
 				values = append(values, uaDevice)
 			case "Referer":
-				if len(fields[j]) > 255 {
-					log.Debugf("[%s] exceed max length (255, got %d) at line %d", config.LogFormat[j-1], len(fields[j]), i)
+				if fields[j] == "-" {
 					continue ReadLog
 				}
-				values = append(values, fields[j])
+				u, err := url.Parse(fields[j])
+				if err != nil {
+					log.Warnf("[Refer] format wrong at line %d", i)
+					continue ReadLog
+				}
+				if u.Scheme == "" { // workaround
+					continue ReadLog
+				}
+				site := u.Scheme + "://" + u.Host
+				if len(site) > 255 {
+					log.Debugf("[Refer.Site] exceed max length (255, got %d) at line %d", len(site), i)
+					continue ReadLog
+				}
+				values = append(values, site)
+				path := site + u.Path
+				if len(path) > 255 {
+					log.Debugf("[Refer.Path] exceed max length (255, got %d) at line %d", len(path), i)
+					continue ReadLog
+				}
+				values = append(values, path)
+				if len(u.RawQuery) > 255 {
+					log.Debugf("[Refer.Query] exceed max length (255, got %d) at line %d", len(u.RawQuery), i)
+					continue ReadLog
+				}
+				values = append(values, u.RawQuery)
 			}
 		}
 

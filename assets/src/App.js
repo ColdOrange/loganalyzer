@@ -14,6 +14,7 @@ import Bandwidth from './pages/Bandwidth';
 import Request from './pages/Request';
 import Response from './pages/Response';
 import UserAgent from './pages/UserAgent';
+import Referer from './pages/Referer';
 import NotFound from './pages/NotFound';
 
 class App extends React.Component<{}> {
@@ -64,6 +65,12 @@ class App extends React.Component<{}> {
                 <span className="nav-text">User Agent</span>
               </Link>
             </Menu.Item>
+            <Menu.Item key="referer">
+              <Link to="referer">
+                <Icon type="swap" />
+                <span className="nav-text">Referer</span>
+              </Link>
+            </Menu.Item>
           </Sidebar>
           <Page>
             <Switch>
@@ -75,6 +82,7 @@ class App extends React.Component<{}> {
               <Route path="/request" component={Request} />
               <Route path="/response" component={Response} />
               <Route path="/user-agent" component={UserAgent} />
+              <Route path="/referer" component={Referer} />
               <Route component={NotFound} />
             </Switch>
           </Page>

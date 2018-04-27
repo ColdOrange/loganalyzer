@@ -20,7 +20,9 @@ CREATE TABLE `log`
   `ua_browser`     varchar(255)     DEFAULT NULL,
   `ua_os`          varchar(255)     DEFAULT NULL,
   `ua_device`      varchar(255)     DEFAULT NULL,
-  `referer`        varchar(255)     DEFAULT NULL,
+  `referer_site`   varchar(255)     DEFAULT NULL,
+  `referer_path`   varchar(255)     DEFAULT NULL,
+  `referer_query`  varchar(255)     DEFAULT NULL,
 
   INDEX `ip` (`ip`),
   INDEX `time` (`time`),

@@ -25,7 +25,7 @@ var LogTableFields = map[string][]string{
 	"ResponseTime":  {"response_time"},
 	"ContentSize":   {"content_size"},
 	"UserAgent":     {"ua_browser", "ua_os", "ua_device"},
-	"Referer":       {"referer"},
+	"Referer":       {"referer_site", "referer_path", "referer_query"},
 }
 
 // Time format, copy from golang `time` package.
