@@ -2,8 +2,10 @@
   overflow: auto;
   background: #fff;
   height: 100vh;
-  position: fixed;
+  position: sticky;
+  top: 0;
   left: 0;
+  box-shadow: 2px 0 6px rgba(240,242,245,.5);
 }
 
 .menu {

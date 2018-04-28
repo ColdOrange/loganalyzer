@@ -4,7 +4,11 @@ import * as React from 'react';
 
 import styles from './index.css';
 
-class Logo extends React.Component<{}> {
+type Props = {
+  collapsed: boolean,
+}
+
+class Logo extends React.Component<Props> {
   render() {
     return (
       <div className={styles.logo}>
@@ -13,9 +17,9 @@ class Logo extends React.Component<{}> {
           alt="logo"
           src="/static/images/logo.svg"
         />
-        <span className={styles.span}>
-          Log Analyzer
-        </span>
+        {
+          this.props.collapsed ? '' : <span className={styles.span}>Log Analyzer</span>
+        }
       </div>
     );
   }

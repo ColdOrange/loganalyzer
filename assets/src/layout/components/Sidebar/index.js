@@ -3,10 +3,11 @@
 import * as React from 'react';
 import { Layout, Menu } from 'antd';
 
-import Logo from './components/Logo';
+import Logo from './components/Logo/index';
 import styles from './index.css';
 
 type Props = {
+  collapsed: boolean,
   children?: React.Node,
 }
 
@@ -18,8 +19,13 @@ class Sidebar extends React.Component<Props> {
       currentPage = 'summary';
     }
     return (
-      <Sider className={styles.sider}>
-        <Logo />
+      <Sider
+        trigger={null}
+        collapsible
+        collapsed={this.props.collapsed}
+        className={styles.sider}
+      >
+        <Logo collapsed={this.props.collapsed} />
         <Menu
           defaultSelectedKeys={[currentPage]}
           className={styles.menu}
