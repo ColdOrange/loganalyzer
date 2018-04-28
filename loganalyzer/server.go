@@ -252,7 +252,7 @@ func handlerReferringURL(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := responseURL()
+		value := referringURL()
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
