@@ -11,7 +11,7 @@ import styles from './index.css';
 class PageViews extends React.Component<{}> {
   error = false;
 
-  // Handler error in parent component, in case it will show several times in child components
+  // Handle error in parent component, in case it will show several times in children
   errorHandler = () => {
     if (!this.error) {
       this.error = true;
