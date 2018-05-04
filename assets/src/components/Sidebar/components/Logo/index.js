@@ -18,7 +18,7 @@ class Logo extends React.Component<Props> {
           src="/static/images/logo.svg"
         />
         {
-          this.props.collapsed ? '' : <span className={styles.span}>Log Analyzer</span>
+          this.props.collapsed ? null : <span className={styles.span}>Log Analyzer</span>
         }
       </div>
     );

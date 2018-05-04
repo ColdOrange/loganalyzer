@@ -6,7 +6,7 @@ import { Card, Spin } from 'antd';
 import styles from './index.css';
 
 type Props = {
-  title: string,
+  title: string | React.Node,
   loading?: boolean,
   placeholder?: React.Node, // TODO: better way to render loading indicator?
   children?: React.Node,
@@ -14,7 +14,11 @@ type Props = {
 
 class ContentCard extends React.Component<Props> {
   render() {
-    const title = <h4 className={styles.title}>{this.props.title}</h4>;
+    const title = typeof this.props.title === 'string' ? (
+      <h4 className={styles.title}>{this.props.title}</h4>
+    ) : (
+      this.props.title
+    );
     const { loading = false } = this.props;
     return (
       <Card
