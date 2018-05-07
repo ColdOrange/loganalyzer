@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from 'react';
+import { withRouter } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 
 import Logo from './components/Logo/index';
@@ -8,18 +9,16 @@ import styles from './index.css';
 
 type Props = {
   collapsed: boolean,
+  location: Object,
+  defaultOpenKeys?: string[],
+  defaultSelectedKeys?: string[],
   children?: React.Node,
 }
 
 class Sidebar extends React.Component<Props> {
   render() {
-    const { Sider } = Layout;
-    let currentPage = window.location.pathname.substring(1);
-    if (currentPage === '') {
-      currentPage = 'summary';
-    }
     return (
-      <Sider
+      <Layout.Sider
         trigger={null}
         collapsible
         collapsed={this.props.collapsed}
@@ -27,7 +26,9 @@ class Sidebar extends React.Component<Props> {
       >
         <Logo collapsed={this.props.collapsed} />
         <Menu
-          defaultSelectedKeys={[currentPage]}
+          defaultOpenKeys={this.props.defaultOpenKeys}
+          defaultSelectedKeys={this.props.defaultSelectedKeys}
+          selectedKeys={[this.props.location.pathname]}
           className={styles.menu}
           theme="light"
           mode="inline"
@@ -36,9 +37,9 @@ class Sidebar extends React.Component<Props> {
             this.props.children
           }
         </Menu>
-      </Sider>
+      </Layout.Sider>
     );
   }
 }
 
-export default Sidebar;
+export default withRouter(Sidebar);

@@ -24,13 +24,8 @@ func (Handler *Handler) Bind(pattern string, handler func(w http.ResponseWriter,
 	Handler.mux[pattern] = handler
 }
 
-var staticFilesHandler http.Handler
-
 // Static file server
-func init() {
-	fileServer := http.FileServer(http.Dir(path.Join(ProjectPath, "assets/static")))
-	staticFilesHandler = http.StripPrefix("/static/", fileServer)
-}
+var staticFilesHandler = http.StripPrefix("/static/", http.FileServer(http.Dir(path.Join(ProjectPath, "assets/static"))))
 
 func (Handler *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	zero := time.Now()

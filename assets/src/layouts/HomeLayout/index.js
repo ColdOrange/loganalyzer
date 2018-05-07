@@ -7,7 +7,8 @@ import { Layout, Menu, Icon } from 'antd';
 import Sidebar from 'components/Sidebar';
 import Page from 'components/Page';
 import Home from 'pages/Home';
-import Config from 'pages/Config';
+import Database from 'pages/Config/Database';
+import LogFormat from 'pages/Config/LogFormat';
 import Reports from 'pages/Reports';
 import NotFound from 'pages/NotFound';
 
@@ -30,20 +31,30 @@ class ConfigLayout extends React.Component<{}, State> {
     return (
       <BrowserRouter>
         <Layout>
-          <Sidebar collapsed={this.state.collapsed}>
-            <Menu.Item key="home">
+          <Sidebar
+            collapsed={this.state.collapsed}
+            defaultOpenKeys={['/config']}
+            defaultSelectedKeys={['/']}
+          >
+            <Menu.Item key="/">
               <Link to="/">
                 <Icon type="home" />
                 <span className="nav-text">Home</span>
               </Link>
             </Menu.Item>
-            <Menu.Item key="config">
-              <Link to="/config">
-                <Icon type="setting" />
-                <span className="nav-text">Config</span>
-              </Link>
-            </Menu.Item>
-            <Menu.Item key="reports">
+            <Menu.SubMenu key="/config" title={<span><Icon type="setting" /><span>Config</span></span>}>
+              <Menu.Item key="/config/database">
+                <Link to="/config/database">
+                  <span className="nav-text">Database</span>
+                </Link>
+              </Menu.Item>
+              <Menu.Item key="/config/log-format">
+                <Link to="/config/log-format">
+                  <span className="nav-text">Log Format</span>
+                </Link>
+              </Menu.Item>
+            </Menu.SubMenu>
+            <Menu.Item key="/reports">
               <Link to="/reports">
                 <Icon type="copy" />
                 <span className="nav-text">Reports</span>
@@ -53,7 +64,8 @@ class ConfigLayout extends React.Component<{}, State> {
           <Page collapsed={this.state.collapsed} toggle={this.toggle}>
             <Switch>
               <Route path="/" exact component={Home} />
-              <Route path="/config" component={Config} />
+              <Route path="/config/database" component={Database} />
+              <Route path="/config/log-format" component={LogFormat} />
               <Route path="/reports" component={Reports} />
               <Route component={NotFound} />
             </Switch>

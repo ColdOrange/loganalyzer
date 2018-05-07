@@ -20,9 +20,9 @@ type Summary struct {
 
 func summary() []byte {
 	var summary Summary
-	_, summary.FileName = filepath.Split(config.LogFile)
+	_, summary.FileName = filepath.Split(logConfig.LogFile)
 
-	file, err := os.Open(config.LogFile)
+	file, err := os.Open(logConfig.LogFile)
 	if err != nil {
 		log.Errorln("Log file open error:", err)
 		return []byte(`{"status": "failed"}`)

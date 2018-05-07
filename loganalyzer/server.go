@@ -1,12 +1,29 @@
 package loganalyzer
 
 import (
+	"io/ioutil"
 	"net/http"
 
 	log "loganalyzer/loganalyzer/logging"
 )
 
 var cache *Cache
+
+// Database Config
+func handlerDatabaseConfig(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	if r.Method == "GET" {
+		w.Write(getDBConfig())
+	} else if r.Method == "POST" {
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, "Error reading request body", http.StatusInternalServerError)
+		}
+		w.Write(setDBConfig(body))
+	} else {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+	}
+}
 
 // Summary
 func handlerSummary(w http.ResponseWriter, r *http.Request) {
@@ -260,6 +277,7 @@ func handlerReferringURL(w http.ResponseWriter, r *http.Request) {
 
 func NewServer(addr string) *http.Server {
 	handler := NewHandler()
+	handler.Bind("/api/config/database", handlerDatabaseConfig)
 	handler.Bind("/api/summary", handlerSummary)
 	handler.Bind("/api/page-views/daily", handlerPageViewsDaily)
 	handler.Bind("/api/page-views/hourly", handlerPageViewsHourly)

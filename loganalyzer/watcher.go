@@ -19,16 +19,19 @@ func StartWebpackWatcher() {
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		log.Fatalln("Start webpack watcher error:", err)
+		log.Errorln("Start webpack watcher error:", err)
+		return
 	}
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
-		log.Fatalln("Start webpack watcher error:", err)
+		log.Errorln("Start webpack watcher error:", err)
+		return
 	}
 
 	err = cmd.Start()
 	if err != nil {
-		log.Fatalln("Start webpack watcher error:", err)
+		log.Errorln("Start webpack watcher error:", err)
+		return
 	}
 	log.Infoln("Webpack start watching files")
 
@@ -37,7 +40,8 @@ func StartWebpackWatcher() {
 
 	err = cmd.Wait()
 	if err != nil {
-		log.Fatalln("Start webpack watcher error:", err)
+		log.Errorln("Start webpack watcher error:", err)
+		return
 	}
 }
 

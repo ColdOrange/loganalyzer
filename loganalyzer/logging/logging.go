@@ -15,22 +15,23 @@ func init() {
 		FullTimestamp:   true,
 		TimestampFormat: "2006-01-02 15:04:05",
 	}
+	logger.Level = logrus.DebugLevel
 }
 
 func SetLevel(level string) {
 	switch strings.ToLower(level) {
 	case "panic":
-		logger.Level = logrus.PanicLevel
+		logger.SetLevel(logrus.PanicLevel)
 	case "fatal":
-		logger.Level = logrus.FatalLevel
+		logger.SetLevel(logrus.FatalLevel)
 	case "error":
-		logger.Level = logrus.ErrorLevel
+		logger.SetLevel(logrus.ErrorLevel)
 	case "warn":
-		logger.Level = logrus.WarnLevel
+		logger.SetLevel(logrus.WarnLevel)
 	case "debug":
-		logger.Level = logrus.DebugLevel
+		logger.SetLevel(logrus.DebugLevel)
 	default:
-		logger.Level = logrus.InfoLevel
+		logger.SetLevel(logrus.InfoLevel)
 	}
 }
 

@@ -4,14 +4,14 @@ import * as React from 'react';
 
 import ContentCard from 'components/ContentCard';
 
-class Config extends React.Component<{}> {
+class LogFormat extends React.Component<{}> {
   render() {
     return (
-      <ContentCard title="Config">
+      <ContentCard title="Log Format Configuration">
 
       </ContentCard>
     );
   }
 }
 
-export default Config;
+export default LogFormat;

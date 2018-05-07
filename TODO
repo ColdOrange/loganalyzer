@@ -5,3 +5,5 @@ Frontend:
 
 Backend:
 1. IP locator
+2. log init
+3. Change status:failed to error!=nil ?

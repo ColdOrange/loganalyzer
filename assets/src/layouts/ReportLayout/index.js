@@ -35,50 +35,53 @@ class ReportLayout extends React.Component<{}, State> {
     return (
       <BrowserRouter>
         <Layout>
-          <Sidebar collapsed={this.state.collapsed}>
-            <Menu.Item key="summary">
+          <Sidebar
+            collapsed={this.state.collapsed}
+            defaultSelectedKeys={['/report/summary']}
+          >
+            <Menu.Item key="/report/summary">
               <Link to="/report/summary">
                 <Icon type="home" />
                 <span className="nav-text">Summary</span>
               </Link>
             </Menu.Item>
-            <Menu.Item key="page-views">
+            <Menu.Item key="/report/page-views">
               <Link to="/report/page-views">
                 <Icon type="file-text" />
                 <span className="nav-text">Page Views</span>
               </Link>
             </Menu.Item>
-            <Menu.Item key="user-views">
+            <Menu.Item key="/report/user-views">
               <Link to="/report/user-views">
                 <Icon type="user" />
                 <span className="nav-text">User Views</span>
               </Link>
             </Menu.Item>
-            <Menu.Item key="bandwidth">
+            <Menu.Item key="/report/bandwidth">
               <Link to="/report/bandwidth">
                 <Icon type="cloud-download-o" />
                 <span className="nav-text">Bandwidth</span>
               </Link>
             </Menu.Item>
-            <Menu.Item key="request">
+            <Menu.Item key="/report/request">
               <Link to="/report/request">
                 <Icon type="link" />
                 <span className="nav-text">Request</span>
               </Link>
             </Menu.Item>
-            <Menu.Item key="response">
+            <Menu.Item key="/report/response">
               <Link to="/report/response">
                 <Icon type="export" />
                 <span className="nav-text">Response</span>
               </Link>
             </Menu.Item>
-            <Menu.Item key="user-agent">
+            <Menu.Item key="/report/user-agent">
               <Link to="/report/user-agent">
                 <Icon type="compass" />
                 <span className="nav-text">User Agent</span>
               </Link>
             </Menu.Item>
-            <Menu.Item key="referer">
+            <Menu.Item key="/report/referer">
               <Link to="/report/referer">
                 <Icon type="swap" />
                 <span className="nav-text">Referer</span>
