@@ -8,7 +8,11 @@ import BandwidthMonthly from './components/BandwidthMonthly';
 import { fetchError } from 'utils/Modal';
 import styles from './index.css';
 
-class Bandwidth extends React.Component<{}> {
+type Props = {
+  match: Object,
+}
+
+class Bandwidth extends React.Component<Props> {
   error = false;
 
   // Handle error in parent component, in case it will show several times in children
@@ -22,11 +26,20 @@ class Bandwidth extends React.Component<{}> {
   render() {
     return (
       <div>
-        <BandwidthDaily errorHandler={this.errorHandler} />
+        <BandwidthDaily
+          match={this.props.match}
+          errorHandler={this.errorHandler}
+        />
         <div className={styles.divider} />
-        <BandwidthHourly errorHandler={this.errorHandler} />
+        <BandwidthHourly
+          match={this.props.match}
+          errorHandler={this.errorHandler}
+        />
         <div className={styles.divider} />
-        <BandwidthMonthly errorHandler={this.errorHandler} />
+        <BandwidthMonthly
+          match={this.props.match}
+          errorHandler={this.errorHandler}
+        />
       </div>
     );
   }

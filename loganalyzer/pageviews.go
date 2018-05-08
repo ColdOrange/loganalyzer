@@ -11,16 +11,16 @@ type PageViews struct {
 	PV   int64  `json:"pv"`
 }
 
-func pageViewsDaily() []byte {
-	return pageViewsQuery("SELECT DATE(time) as date, count(*) FROM log GROUP BY date ORDER BY date ASC")
+func pageViewsDaily(table string) []byte {
+	return pageViewsQuery("SELECT DATE(time) as date, count(*) FROM " + table + " GROUP BY date ORDER BY date ASC")
 }
 
-func pageViewsHourly(date string) []byte {
-	return pageViewsQuery("SELECT HOUR(TIME(time)) as hour, count(*) FROM log WHERE DATE(time)=? GROUP BY hour ORDER BY hour ASC", date)
+func pageViewsHourly(table, date string) []byte {
+	return pageViewsQuery("SELECT HOUR(TIME(time)) as hour, count(*) FROM "+table+" WHERE DATE(time)=? GROUP BY hour ORDER BY hour ASC", date)
 }
 
-func pageViewsMonthly() []byte {
-	return pageViewsQuery("SELECT DATE_FORMAT(time,'%Y-%m') AS ym, count(*) FROM log GROUP BY ym ORDER BY ym ASC")
+func pageViewsMonthly(table string) []byte {
+	return pageViewsQuery("SELECT DATE_FORMAT(time,'%Y-%m') AS ym, count(*) FROM " + table + " GROUP BY ym ORDER BY ym ASC")
 }
 
 func pageViewsQuery(query string, args ...interface{}) []byte {

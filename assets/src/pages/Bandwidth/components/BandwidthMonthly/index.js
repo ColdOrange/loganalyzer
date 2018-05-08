@@ -8,6 +8,7 @@ import { bandwidthFormatter } from 'utils/BandwidthFormatter';
 import styles from './index.css';
 
 type Props = {
+  match: Object,
   errorHandler: () => void,
 }
 
@@ -26,7 +27,8 @@ class BandWidthMonthly extends React.Component<Props, State> {
   };
 
   loadData = () => {
-    fetch('/api/bandwidth/monthly')
+    const id = this.props.match.params.id;
+    fetch(`/api/reports/${id}/bandwidth/monthly`)
       .then(response => response.json())
       .then(
         data => {

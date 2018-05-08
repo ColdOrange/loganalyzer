@@ -26,6 +26,7 @@ const columns = [
 ];
 
 type Props = {
+  match: Object,
   errorHandler: () => void,
 }
 
@@ -45,7 +46,8 @@ class ReferringURL extends React.Component<Props, State> {
   };
 
   loadData = () => {
-    fetch('/api/referer/url')
+    const id = this.props.match.params.id;
+    fetch(`/api/reports/${id}/referer/url`)
       .then(response => response.json())
       .then(
         data => {

@@ -39,6 +39,7 @@ const columns = [
 ];
 
 type Props = {
+  match: Object,
   errorHandler: () => void,
 }
 
@@ -59,7 +60,8 @@ class ResponseURL extends React.Component<Props, State> {
   };
 
   loadData = () => {
-    fetch('/api/response-url')
+    const id = this.props.match.params.id;
+    fetch(`/api/reports/${id}/response-url`)
       .then(response => response.json())
       .then(
         data => {

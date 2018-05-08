@@ -12,8 +12,8 @@ type ReferringSite struct {
 	UV   int64  `json:"uv"`
 }
 
-func referringSite() []byte {
-	rows, err := db.Query("SELECT referer_site, count(*) as count, count(distinct(ip)) FROM log WHERE referer_site != '' GROUP BY referer_site ORDER BY count DESC")
+func referringSite(table string) []byte {
+	rows, err := db.Query("SELECT referer_site, count(*) as count, count(distinct(ip)) FROM " + table + " WHERE referer_site != '' GROUP BY referer_site ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)
@@ -53,8 +53,8 @@ type ReferringURL struct {
 	UV  int64  `json:"uv"`
 }
 
-func referringURL() []byte {
-	rows, err := db.Query("SELECT referer_path, count(*) as count, count(distinct(ip)) FROM log WHERE referer_path != '' GROUP BY referer_path ORDER BY count DESC")
+func referringURL(table string) []byte {
+	rows, err := db.Query("SELECT referer_path, count(*) as count, count(distinct(ip)) FROM " + table + " WHERE referer_path != '' GROUP BY referer_path ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)

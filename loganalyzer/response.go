@@ -13,8 +13,8 @@ type StatusCode struct {
 	Count      int64  `json:"count"`
 }
 
-func statusCode() []byte {
-	rows, err := db.Query("SELECT response_code, count(*) as count FROM log GROUP BY response_code ORDER BY count DESC")
+func statusCode(table string) []byte {
+	rows, err := db.Query("SELECT response_code, count(*) as count FROM " + table + " GROUP BY response_code ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)
@@ -53,7 +53,7 @@ type ResponseTime struct {
 	Count     int64  `json:"count"`
 }
 
-func responseTime() []byte {
+func responseTime(table string) []byte {
 	rows, err := db.Query("SELECT CASE " +
 		"WHEN response_time < 50 THEN '<50ms' " +
 		"WHEN response_time >= 50 AND response_time < 100 THEN '50~100ms' " +
@@ -63,7 +63,7 @@ func responseTime() []byte {
 		"WHEN response_time >= 400 AND response_time < 500 THEN '400~500ms' " +
 		"ELSE '>500ms' " +
 		"END AS time_range, count(*) AS count " +
-		"FROM log " +
+		"FROM " + table + " " +
 		"GROUP BY time_range " +
 		"ORDER BY count DESC")
 	if err != nil {
@@ -105,8 +105,8 @@ type ResponseURL struct {
 	StdDev int64  `json:"stdDev"`
 }
 
-func responseURL() []byte {
-	rows, err := db.Query("SELECT url_path, COUNT(*) AS pv, AVG(response_time), STD(response_time) FROM log WHERE url_is_static='0' GROUP BY url_path ORDER BY pv DESC")
+func responseURL(table string) []byte {
+	rows, err := db.Query("SELECT url_path, COUNT(*) AS pv, AVG(response_time), STD(response_time) FROM " + table + " WHERE url_is_static='0' GROUP BY url_path ORDER BY pv DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)

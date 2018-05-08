@@ -18,7 +18,7 @@ type Summary struct {
 	Bandwidth float64 `json:"bandwidth"`
 }
 
-func summary() []byte {
+func summary(table string) []byte {
 	var summary Summary
 	_, summary.FileName = filepath.Split(logConfig.LogFile)
 
@@ -35,21 +35,21 @@ func summary() []byte {
 	}
 	summary.FileSize = stat.Size()
 
-	row := db.QueryRow("SELECT time FROM log ORDER BY id LIMIT 1")
+	row := db.QueryRow("SELECT time FROM " + table + " ORDER BY id LIMIT 1")
 	err = row.Scan(&summary.StartTime)
 	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)
 	}
 
-	row = db.QueryRow("SELECT time FROM log ORDER BY id DESC LIMIT 1")
+	row = db.QueryRow("SELECT time FROM " + table + " ORDER BY id DESC LIMIT 1")
 	err = row.Scan(&summary.EndTime)
 	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)
 	}
 
-	row = db.QueryRow("SELECT count(*), count(distinct(ip)), sum(content_size) FROM log")
+	row = db.QueryRow("SELECT count(*), count(distinct(ip)), sum(content_size) FROM " + table + "")
 	err = row.Scan(&summary.PageViews, &summary.UserViews, &summary.Bandwidth)
 	if err != nil {
 		log.Errorln("DB query error:", err)

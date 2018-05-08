@@ -9,7 +9,11 @@ import ResponseURL from './components/ResponseURL';
 import { fetchError } from 'utils/Modal';
 import styles from './index.css';
 
-class Request extends React.Component<{}> {
+type Props = {
+  match: Object,
+}
+
+class Request extends React.Component<Props> {
   error = false;
 
   // Handle error in parent component, in case it will show several times in children
@@ -25,14 +29,23 @@ class Request extends React.Component<{}> {
       <div>
         <Row gutter={24}>
           <Col span={12}>
-            <StatusCode errorHandler={this.errorHandler} />
+            <StatusCode
+              match={this.props.match}
+              errorHandler={this.errorHandler}
+            />
           </Col>
           <Col span={12}>
-            <ResponseTime errorHandler={this.errorHandler} />
+            <ResponseTime
+              match={this.props.match}
+              errorHandler={this.errorHandler}
+            />
           </Col>
         </Row>
         <div className={styles.divider} />
-        <ResponseURL errorHandler={this.errorHandler} />
+        <ResponseURL
+          match={this.props.match}
+          errorHandler={this.errorHandler}
+        />
       </div>
     );
   }

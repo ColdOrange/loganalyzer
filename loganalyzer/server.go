@@ -3,6 +3,7 @@ package loganalyzer
 import (
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	log "loganalyzer/loganalyzer/logging"
 )
@@ -42,7 +43,7 @@ func handlerLogFormatConfig(w http.ResponseWriter, r *http.Request) {
 }
 
 // Reports
-func handlerReports(w http.ResponseWriter, r *http.Request) {
+func handlerReports(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(reports())
 }
@@ -50,10 +51,10 @@ func handlerReports(w http.ResponseWriter, r *http.Request) {
 // Summary
 func handlerSummary(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	if cache.Exist(r.RequestURI) {
+	if cache.Exist(r.RequestURI) { // Should use r.RequestURI instead of r.URL.Path, because r.URL.Path doesn't contain query params
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := summary()
+		value := summary(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -65,7 +66,7 @@ func handlerPageViewsDaily(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := pageViewsDaily()
+		value := pageViewsDaily(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -76,7 +77,7 @@ func handlerPageViewsHourly(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := pageViewsHourly(r.URL.Query().Get("date"))
+		value := pageViewsHourly(getLogTableFromURL(r.URL.Path), r.URL.Query().Get("date"))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -87,7 +88,7 @@ func handlerPageViewsMonthly(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := pageViewsMonthly()
+		value := pageViewsMonthly(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -99,7 +100,7 @@ func handlerUserViewsDaily(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := userViewsDaily()
+		value := userViewsDaily(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -110,7 +111,7 @@ func handlerUserViewsHourly(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := userViewsHourly(r.URL.Query().Get("date"))
+		value := userViewsHourly(getLogTableFromURL(r.URL.Path), r.URL.Query().Get("date"))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -121,7 +122,7 @@ func handlerUserViewsMonthly(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := userViewsMonthly()
+		value := userViewsMonthly(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -133,7 +134,7 @@ func handlerBandwidthDaily(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := bandwidthDaily()
+		value := bandwidthDaily(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -144,7 +145,7 @@ func handlerBandwidthHourly(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := bandwidthHourly(r.URL.Query().Get("date"))
+		value := bandwidthHourly(getLogTableFromURL(r.URL.Path), r.URL.Query().Get("date"))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -155,7 +156,7 @@ func handlerBandwidthMonthly(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := bandwidthMonthly()
+		value := bandwidthMonthly(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -167,7 +168,7 @@ func handlerRequestMethod(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := requestMethod()
+		value := requestMethod(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -178,7 +179,7 @@ func handlerHTTPVersion(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := httpVersion()
+		value := httpVersion(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -189,7 +190,7 @@ func handlerRequestURL(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := requestURL()
+		value := requestURL(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -200,7 +201,7 @@ func handlerStaticFile(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := staticFile()
+		value := staticFile(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -212,7 +213,7 @@ func handlerStatusCode(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := statusCode()
+		value := statusCode(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -223,7 +224,7 @@ func handlerResponseTime(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := responseTime()
+		value := responseTime(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -234,7 +235,7 @@ func handlerResponseURL(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := responseURL()
+		value := responseURL(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -246,7 +247,7 @@ func handlerOperatingSystem(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := operatingSystem()
+		value := operatingSystem(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -257,7 +258,7 @@ func handlerDevice(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := device()
+		value := device(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -268,7 +269,7 @@ func handlerBrowser(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := browser()
+		value := browser(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -280,7 +281,7 @@ func handlerReferringSite(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := referringSite()
+		value := referringSite(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
@@ -291,39 +292,44 @@ func handlerReferringURL(w http.ResponseWriter, r *http.Request) {
 	if cache.Exist(r.RequestURI) {
 		w.Write(cache.Get(r.RequestURI))
 	} else {
-		value := referringURL()
+		value := referringURL(getLogTableFromURL(r.URL.Path))
 		w.Write(value)
 		cache.Set(r.RequestURI, value)
 	}
+}
+
+func getLogTableFromURL(url string) string {
+	id := url[13 : 13+strings.Index(url[13:], "/")]
+	return "log_" + id
 }
 
 func NewServer(addr string) *http.Server {
 	handler := NewHandler()
 	handler.Bind("/api/config/database", handlerDatabaseConfig)
 	handler.Bind("/api/config/log-format", handlerLogFormatConfig)
-	handler.Bind("/api/reports", handlerReports)
-	handler.Bind("/api/summary", handlerSummary)
-	handler.Bind("/api/page-views/daily", handlerPageViewsDaily)
-	handler.Bind("/api/page-views/hourly", handlerPageViewsHourly)
-	handler.Bind("/api/page-views/monthly", handlerPageViewsMonthly)
-	handler.Bind("/api/user-views/daily", handlerUserViewsDaily)
-	handler.Bind("/api/user-views/hourly", handlerUserViewsHourly)
-	handler.Bind("/api/user-views/monthly", handlerUserViewsMonthly)
-	handler.Bind("/api/bandwidth/daily", handlerBandwidthDaily)
-	handler.Bind("/api/bandwidth/hourly", handlerBandwidthHourly)
-	handler.Bind("/api/bandwidth/monthly", handlerBandwidthMonthly)
-	handler.Bind("/api/request-method", handlerRequestMethod)
-	handler.Bind("/api/http-version", handlerHTTPVersion)
-	handler.Bind("/api/request-url", handlerRequestURL)
-	handler.Bind("/api/static-file", handlerStaticFile)
-	handler.Bind("/api/status-code", handlerStatusCode)
-	handler.Bind("/api/response-time", handlerResponseTime)
-	handler.Bind("/api/response-url", handlerResponseURL)
-	handler.Bind("/api/user-agent/os", handlerOperatingSystem)
-	handler.Bind("/api/user-agent/device", handlerDevice)
-	handler.Bind("/api/user-agent/browser", handlerBrowser)
-	handler.Bind("/api/referer/site", handlerReferringSite)
-	handler.Bind("/api/referer/url", handlerReferringURL)
+	handler.Bind("/api/reports$", handlerReports) // $ for exact match
+	handler.Bind("/api/reports/[0-9]+/summary", handlerSummary)
+	handler.Bind("/api/reports/[0-9]+/page-views/daily", handlerPageViewsDaily)
+	handler.Bind("/api/reports/[0-9]+/page-views/hourly", handlerPageViewsHourly)
+	handler.Bind("/api/reports/[0-9]+/page-views/monthly", handlerPageViewsMonthly)
+	handler.Bind("/api/reports/[0-9]+/user-views/daily", handlerUserViewsDaily)
+	handler.Bind("/api/reports/[0-9]+/user-views/hourly", handlerUserViewsHourly)
+	handler.Bind("/api/reports/[0-9]+/user-views/monthly", handlerUserViewsMonthly)
+	handler.Bind("/api/reports/[0-9]+/bandwidth/daily", handlerBandwidthDaily)
+	handler.Bind("/api/reports/[0-9]+/bandwidth/hourly", handlerBandwidthHourly)
+	handler.Bind("/api/reports/[0-9]+/bandwidth/monthly", handlerBandwidthMonthly)
+	handler.Bind("/api/reports/[0-9]+/request-method", handlerRequestMethod)
+	handler.Bind("/api/reports/[0-9]+/http-version", handlerHTTPVersion)
+	handler.Bind("/api/reports/[0-9]+/request-url", handlerRequestURL)
+	handler.Bind("/api/reports/[0-9]+/static-file", handlerStaticFile)
+	handler.Bind("/api/reports/[0-9]+/status-code", handlerStatusCode)
+	handler.Bind("/api/reports/[0-9]+/response-time", handlerResponseTime)
+	handler.Bind("/api/reports/[0-9]+/response-url", handlerResponseURL)
+	handler.Bind("/api/reports/[0-9]+/user-agent/os", handlerOperatingSystem)
+	handler.Bind("/api/reports/[0-9]+/user-agent/device", handlerDevice)
+	handler.Bind("/api/reports/[0-9]+/user-agent/browser", handlerBrowser)
+	handler.Bind("/api/reports/[0-9]+/referer/site", handlerReferringSite)
+	handler.Bind("/api/reports/[0-9]+/referer/url", handlerReferringURL)
 
 	cache = NewCache()
 

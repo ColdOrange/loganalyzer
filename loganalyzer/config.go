@@ -81,11 +81,6 @@ func loadDBConfig() {
 	if err != nil {
 		log.Fatalln("Open DB error:", err)
 	}
-	// Create reports table
-	_, err = db.Exec(createReportsTable)
-	if err != nil {
-		log.Fatalln("Create reports table error:", err)
-	}
 }
 
 func loadLogConfig() {

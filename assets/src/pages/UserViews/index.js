@@ -8,7 +8,11 @@ import UserViewsMonthly from './components/UserViewsMonthly';
 import { fetchError } from 'utils/Modal';
 import styles from './index.css';
 
-class UserViews extends React.Component<{}> {
+type Props = {
+  match: Object,
+}
+
+class UserViews extends React.Component<Props> {
   error = false;
 
   // Handle error in parent component, in case it will show several times in children
@@ -22,11 +26,20 @@ class UserViews extends React.Component<{}> {
   render() {
     return (
       <div>
-        <UserViewsDaily errorHandler={this.errorHandler} />
+        <UserViewsDaily
+          match={this.props.match}
+          errorHandler={this.errorHandler}
+        />
         <div className={styles.divider} />
-        <UserViewsHourly errorHandler={this.errorHandler} />
+        <UserViewsHourly
+          match={this.props.match}
+          errorHandler={this.errorHandler}
+        />
         <div className={styles.divider} />
-        <UserViewsMonthly errorHandler={this.errorHandler} />
+        <UserViewsMonthly
+          match={this.props.match}
+          errorHandler={this.errorHandler}
+        />
       </div>
     );
   }

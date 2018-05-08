@@ -11,16 +11,16 @@ type Bandwidth struct {
 	Bandwidth int64  `json:"bandwidth"`
 }
 
-func bandwidthDaily() []byte {
-	return bandwidthQuery("SELECT DATE(time) as date, sum(content_size) FROM log GROUP BY date ORDER BY date ASC")
+func bandwidthDaily(table string) []byte {
+	return bandwidthQuery("SELECT DATE(time) as date, sum(content_size) FROM " + table + " GROUP BY date ORDER BY date ASC")
 }
 
-func bandwidthHourly(date string) []byte {
-	return bandwidthQuery("SELECT HOUR(TIME(time)) as hour, sum(content_size) FROM log WHERE DATE(time)=? GROUP BY hour ORDER BY hour ASC", date)
+func bandwidthHourly(table, date string) []byte {
+	return bandwidthQuery("SELECT HOUR(TIME(time)) as hour, sum(content_size) FROM "+table+" WHERE DATE(time)=? GROUP BY hour ORDER BY hour ASC", date)
 }
 
-func bandwidthMonthly() []byte {
-	return bandwidthQuery("SELECT DATE_FORMAT(time,'%Y-%m') AS ym, sum(content_size) FROM log GROUP BY ym ORDER BY ym ASC")
+func bandwidthMonthly(table string) []byte {
+	return bandwidthQuery("SELECT DATE_FORMAT(time,'%Y-%m') AS ym, sum(content_size) FROM " + table + " GROUP BY ym ORDER BY ym ASC")
 }
 
 func bandwidthQuery(query string, args ...interface{}) []byte {

@@ -6,6 +6,7 @@ import ContentCard from 'components/ContentCard';
 import CustomPieChart from 'components/CustomPieChart';
 
 type Props = {
+  match: Object,
   errorHandler: () => void,
 }
 
@@ -24,7 +25,8 @@ class RequestMethod extends React.Component<Props, State> {
   };
 
   loadData = () => {
-    fetch('/api/request-method')
+    const id = this.props.match.params.id;
+    fetch(`/api/reports/${id}/request-method`)
       .then(response => response.json())
       .then(
         data => {

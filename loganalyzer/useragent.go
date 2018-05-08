@@ -11,8 +11,8 @@ type OperatingSystem struct {
 	Count int64  `json:"count"`
 }
 
-func operatingSystem() []byte {
-	rows, err := db.Query("SELECT ua_os, count(*) as count FROM log WHERE ua_os != 'Unknown' GROUP BY ua_os ORDER BY count DESC")
+func operatingSystem(table string) []byte {
+	rows, err := db.Query("SELECT ua_os, count(*) as count FROM " + table + " WHERE ua_os != 'Unknown' GROUP BY ua_os ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)
@@ -50,8 +50,8 @@ type Device struct {
 	Count  int64  `json:"count"`
 }
 
-func device() []byte {
-	rows, err := db.Query("SELECT ua_device, count(*) as count FROM log WHERE ua_device != 'Unknown' GROUP BY ua_device ORDER BY count DESC")
+func device(table string) []byte {
+	rows, err := db.Query("SELECT ua_device, count(*) as count FROM " + table + " WHERE ua_device != 'Unknown' GROUP BY ua_device ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)
@@ -90,8 +90,8 @@ type Browser struct {
 	UV      int64  `json:"uv"`
 }
 
-func browser() []byte {
-	rows, err := db.Query("SELECT ua_browser, count(*) as count, count(distinct(ip)) FROM log WHERE ua_browser != 'Unknown' GROUP BY ua_browser ORDER BY count DESC")
+func browser(table string) []byte {
+	rows, err := db.Query("SELECT ua_browser, count(*) as count, count(distinct(ip)) FROM " + table + " WHERE ua_browser != 'Unknown' GROUP BY ua_browser ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)

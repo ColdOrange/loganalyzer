@@ -7,6 +7,10 @@ import KVCard from './components/KVCard';
 import { fetchError } from 'utils/Modal';
 import { bandwidthFormatter } from 'utils/BandwidthFormatter';
 
+type Props = {
+  match: Object,
+}
+
 type State = {
   logFile: { [string]: any },
   timeRange: { [string]: any },
@@ -16,7 +20,7 @@ type State = {
   isLoaded: boolean,
 }
 
-class Summary extends React.Component<{}, State> {
+class Summary extends React.Component<Props, State> {
   state = {
     logFile: {},
     timeRange: {},
@@ -67,7 +71,8 @@ class Summary extends React.Component<{}, State> {
   };
 
   loadData = () => {
-    fetch('/api/summary')
+    const id = this.props.match.params.id;
+    fetch(`/api/reports/${id}/summary`)
       .then(response => response.json())
       .then(
         data => {

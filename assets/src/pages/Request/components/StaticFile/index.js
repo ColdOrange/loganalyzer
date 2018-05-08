@@ -35,6 +35,7 @@ const columns = [
 ];
 
 type Props = {
+  match: Object,
   errorHandler: () => void,
 }
 
@@ -55,7 +56,8 @@ class StaticFile extends React.Component<Props, State> {
   };
 
   loadData = () => {
-    fetch('/api/static-file')
+    const id = this.props.match.params.id;
+    fetch(`/api/reports/${id}/static-file`)
       .then(response => response.json())
       .then(
         data => {

@@ -44,6 +44,7 @@ const columns = [
 ];
 
 type Props = {
+  match: Object,
   errorHandler: () => void,
 }
 
@@ -63,7 +64,8 @@ class Browser extends React.Component<Props, State> {
   };
 
   loadData = () => {
-    fetch('/api/user-agent/browser')
+    const id = this.props.match.params.id;
+    fetch(`/api/reports/${id}/user-agent/browser`)
       .then(response => response.json())
       .then(
         data => {

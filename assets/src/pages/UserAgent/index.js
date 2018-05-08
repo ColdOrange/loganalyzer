@@ -9,7 +9,11 @@ import Browser from './components/Browser';
 import { fetchError } from 'utils/Modal';
 import styles from './index.css';
 
-class UserAgent extends React.Component<{}> {
+type Props = {
+  match: Object,
+}
+
+class UserAgent extends React.Component<Props> {
   error = false;
 
   // Handle error in parent component, in case it will show several times in children
@@ -25,14 +29,23 @@ class UserAgent extends React.Component<{}> {
       <div>
         <Row gutter={24}>
           <Col span={12}>
-            <OperatingSystem errorHandler={this.errorHandler} />
+            <OperatingSystem
+              match={this.props.match}
+              errorHandler={this.errorHandler}
+            />
           </Col>
           <Col span={12}>
-            <Device errorHandler={this.errorHandler} />
+            <Device
+              match={this.props.match}
+              errorHandler={this.errorHandler}
+            />
           </Col>
         </Row>
         <div className={styles.divider} />
-        <Browser errorHandler={this.errorHandler} />
+        <Browser
+          match={this.props.match}
+          errorHandler={this.errorHandler}
+        />
       </div>
     );
   }

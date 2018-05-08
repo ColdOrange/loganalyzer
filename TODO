@@ -2,6 +2,8 @@ Frontend:
 1. config (theme, api, etc.)
 2. zoom line chart (maybe use HighCharts?)
 3. use redux store
+4. go home button on NotFound page doesn't work
+5. add loading while generating reports
 
 Backend:
 1. IP locator

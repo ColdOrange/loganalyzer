@@ -10,7 +10,11 @@ import StaticFile from './components/StaticFile';
 import { fetchError } from 'utils/Modal';
 import styles from './index.css';
 
-class Request extends React.Component<{}> {
+type Props = {
+  match: Object,
+}
+
+class Request extends React.Component<Props> {
   error = false;
 
   // Handle error in parent component, in case it will show several times in children
@@ -26,16 +30,28 @@ class Request extends React.Component<{}> {
       <div>
         <Row gutter={24}>
           <Col span={12}>
-            <RequestMethod errorHandler={this.errorHandler} />
+            <RequestMethod
+              match={this.props.match}
+              errorHandler={this.errorHandler}
+            />
           </Col>
           <Col span={12}>
-            <HTTPVersion errorHandler={this.errorHandler} />
+            <HTTPVersion
+              match={this.props.match}
+              errorHandler={this.errorHandler}
+            />
           </Col>
         </Row>
         <div className={styles.divider} />
-        <RequestURL errorHandler={this.errorHandler} />
+        <RequestURL
+          match={this.props.match}
+          errorHandler={this.errorHandler}
+        />
         <div className={styles.divider} />
-        <StaticFile errorHandler={this.errorHandler} />
+        <StaticFile
+          match={this.props.match}
+          errorHandler={this.errorHandler}
+        />
       </div>
     );
   }

@@ -8,6 +8,7 @@ import CustomLineChart from 'components/CustomLineChart';
 import styles from './index.css';
 
 type Props = {
+  match: Object,
   errorHandler: () => void,
 }
 
@@ -28,7 +29,8 @@ class UserViewsHourly extends React.Component<Props, State> {
   };
 
   loadData = (date: string) => {
-    fetch(`/api/user-views/hourly?date=${date}`)
+    const id = this.props.match.params.id;
+    fetch(`/api/reports/${id}/user-views/hourly?date=${date}`)
       .then(response => response.json())
       .then(
         data => {
@@ -51,7 +53,8 @@ class UserViewsHourly extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    fetch('/api/user-views/daily')  // TODO: only fetch once?
+    const id = this.props.match.params.id;
+    fetch(`/api/reports/${id}/user-views/daily`)  // TODO: only fetch once?
       .then(response => response.json())
       .then(
         data => {

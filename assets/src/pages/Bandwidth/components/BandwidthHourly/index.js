@@ -9,6 +9,7 @@ import { bandwidthFormatter } from 'utils/BandwidthFormatter';
 import styles from './index.css';
 
 type Props = {
+  match: Object,
   errorHandler: () => void,
 }
 
@@ -29,7 +30,8 @@ class BandwidthHourly extends React.Component<Props, State> {
   };
 
   loadData = (date: string) => {
-    fetch(`/api/bandwidth/hourly?date=${date}`)
+    const id = this.props.match.params.id;
+    fetch(`/api/reports/${id}/bandwidth/hourly?date=${date}`)
       .then(response => response.json())
       .then(
         data => {
@@ -52,7 +54,8 @@ class BandwidthHourly extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    fetch('/api/bandwidth/daily')  // TODO: only fetch once?
+    const id = this.props.match.params.id;
+    fetch(`/api/reports/${id}/bandwidth/daily`) // TODO: only fetch once?
       .then(response => response.json())
       .then(
         data => {

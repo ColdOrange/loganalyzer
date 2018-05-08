@@ -7,7 +7,11 @@ import ReferringURL from './components/ReferringURL';
 import { fetchError } from 'utils/Modal';
 import styles from './index.css';
 
-class Referer extends React.Component<{}> {
+type Props = {
+  match: Object,
+}
+
+class Referer extends React.Component<Props> {
   error = false;
 
   // Handle error in parent component, in case it will show several times in children
@@ -21,9 +25,15 @@ class Referer extends React.Component<{}> {
   render() {
     return (
       <div>
-        <ReferringSite errorHandler={this.errorHandler} />
+        <ReferringSite
+          match={this.props.match}
+          errorHandler={this.errorHandler}
+        />
         <div className={styles.divider} />
-        <ReferringURL errorHandler={this.errorHandler} />
+        <ReferringURL
+          match={this.props.match}
+          errorHandler={this.errorHandler}
+        />
       </div>
     );
   }

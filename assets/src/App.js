@@ -16,7 +16,7 @@ class App extends React.Component<{}> {
           <Route path="/" exact component={HomeLayout} />
           <Route path="/config" component={HomeLayout} />
           <Route path="/reports" exact component={HomeLayout} />
-          <Route path="/reports/:reportId" component={ReportLayout} />
+          <Route path="/reports/:id" component={ReportLayout} />
           <Route component={NotFound} />
         </Switch>
       </BrowserRouter>

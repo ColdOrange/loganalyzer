@@ -11,16 +11,16 @@ type UserViews struct {
 	UV   int64  `json:"uv"`
 }
 
-func userViewsDaily() []byte {
-	return userViewsQuery("SELECT DATE(time) as date, count(distinct(ip)) FROM log GROUP BY date ORDER BY date ASC")
+func userViewsDaily(table string) []byte {
+	return userViewsQuery("SELECT DATE(time) as date, count(distinct(ip)) FROM " + table + " GROUP BY date ORDER BY date ASC")
 }
 
-func userViewsHourly(date string) []byte {
-	return userViewsQuery("SELECT HOUR(TIME(time)) as hour, count(distinct(ip)) FROM log WHERE DATE(time)=? GROUP BY hour ORDER BY hour ASC", date)
+func userViewsHourly(table, date string) []byte {
+	return userViewsQuery("SELECT HOUR(TIME(time)) as hour, count(distinct(ip)) FROM "+table+" WHERE DATE(time)=? GROUP BY hour ORDER BY hour ASC", date)
 }
 
-func userViewsMonthly() []byte {
-	return userViewsQuery("SELECT DATE_FORMAT(time,'%Y-%m') AS ym, count(distinct(ip)) FROM log GROUP BY ym ORDER BY ym ASC")
+func userViewsMonthly(table string) []byte {
+	return userViewsQuery("SELECT DATE_FORMAT(time,'%Y-%m') AS ym, count(distinct(ip)) FROM " + table + " GROUP BY ym ORDER BY ym ASC")
 }
 
 func userViewsQuery(query string, args ...interface{}) []byte {

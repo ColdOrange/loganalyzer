@@ -8,7 +8,11 @@ import PageViewsMonthly from './components/PageViewsMonthly';
 import { fetchError } from 'utils/Modal';
 import styles from './index.css';
 
-class PageViews extends React.Component<{}> {
+type Props = {
+  match: Object,
+}
+
+class PageViews extends React.Component<Props> {
   error = false;
 
   // Handle error in parent component, in case it will show several times in children
@@ -22,11 +26,20 @@ class PageViews extends React.Component<{}> {
   render() {
     return (
       <div>
-        <PageViewsDaily errorHandler={this.errorHandler} />
+        <PageViewsDaily
+          match={this.props.match}
+          errorHandler={this.errorHandler}
+        />
         <div className={styles.divider} />
-        <PageViewsHourly errorHandler={this.errorHandler} />
+        <PageViewsHourly
+          match={this.props.match}
+          errorHandler={this.errorHandler}
+        />
         <div className={styles.divider} />
-        <PageViewsMonthly errorHandler={this.errorHandler} />
+        <PageViewsMonthly
+          match={this.props.match}
+          errorHandler={this.errorHandler}
+        />
       </div>
     );
   }

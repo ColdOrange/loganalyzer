@@ -11,8 +11,8 @@ type RequestMethod struct {
 	Count  int64  `json:"count"`
 }
 
-func requestMethod() []byte {
-	rows, err := db.Query("SELECT request_method, count(*) as count FROM log GROUP BY request_method ORDER BY count DESC")
+func requestMethod(table string) []byte {
+	rows, err := db.Query("SELECT request_method, count(*) as count FROM " + table + " GROUP BY request_method ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)
@@ -50,8 +50,8 @@ type HTTPVersion struct {
 	Count   int64  `json:"count"`
 }
 
-func httpVersion() []byte {
-	rows, err := db.Query("SELECT http_version, count(*) as count FROM log GROUP BY http_version ORDER BY count DESC")
+func httpVersion(table string) []byte {
+	rows, err := db.Query("SELECT http_version, count(*) as count FROM " + table + " GROUP BY http_version ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)
@@ -91,8 +91,8 @@ type RequestURL struct {
 	Bandwidth int64  `json:"bandwidth"`
 }
 
-func requestURL() []byte {
-	rows, err := db.Query("SELECT url_path, count(*) as pv, count(distinct(ip)), sum(content_size) FROM log WHERE url_is_static='0' GROUP BY url_path ORDER BY pv DESC")
+func requestURL(table string) []byte {
+	rows, err := db.Query("SELECT url_path, count(*) as pv, count(distinct(ip)), sum(content_size) FROM " + table + " WHERE url_is_static='0' GROUP BY url_path ORDER BY pv DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)
@@ -134,8 +134,8 @@ type StaticFile struct {
 	Bandwidth int64  `json:"bandwidth"`
 }
 
-func staticFile() []byte {
-	rows, err := db.Query("SELECT url_path, count(*) as count, sum(content_size) FROM log WHERE url_is_static='1' and response_code='200' GROUP BY url_path ORDER BY count DESC")
+func staticFile(table string) []byte {
+	rows, err := db.Query("SELECT url_path, count(*) as count, sum(content_size) FROM " + table + " WHERE url_is_static='1' and response_code='200' GROUP BY url_path ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)
