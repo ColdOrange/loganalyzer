@@ -14,6 +14,7 @@ CREATE TABLE reports
   ENGINE = InnoDB
   CHARSET = utf8;
 `
+
 func createLogTable(id string) string {
 	return `
 DROP TABLE IF EXISTS log_` + id + `;

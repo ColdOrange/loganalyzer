@@ -21,6 +21,8 @@ type State = {
 class Database extends React.Component<Props, State> {
   state = {
     driver: 'mysql',
+    username: '',
+    password: '',
     database: 'log_analyzer',
   };
 
@@ -84,7 +86,7 @@ class Database extends React.Component<Props, State> {
             this.setState(values);
             this.postData(values);
           },
-        })
+        });
       }
     });
   };

@@ -1,6 +1,5 @@
 package loganalyzer
 
-
 import (
 	"bufio"
 	"fmt"

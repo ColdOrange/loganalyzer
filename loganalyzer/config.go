@@ -125,12 +125,12 @@ func setDBConfig(data []byte) []byte { // TODO: maybe this function is too long
 		log.Errorln("Unmarshal DBConfig error:", err)
 		return []byte(`{"status": "failed"}`) // TODO: provide detailed error message
 	}
-	if config.Driver == dbConfig.Driver &&
-		config.Username == dbConfig.Username &&
-		config.Password == dbConfig.Password &&
-		config.Database == dbConfig.Database { // TODO: check config values
-		return []byte(`{"status": "successful"}`)
-	}
+	//if config.Driver == dbConfig.Driver &&	// TODO: add later
+	//	config.Username == dbConfig.Username &&
+	//	config.Password == dbConfig.Password &&
+	//	config.Database == dbConfig.Database { // TODO: check config values
+	//	return []byte(`{"status": "successful"}`)
+	//}
 
 	// Write to config file
 	file, err := os.Create(dbConfigFile)
@@ -243,12 +243,12 @@ func setLogConfig(data []byte) []byte {
 		log.Errorln("Unmarshal LogConfig error:", err)
 		return []byte(`{"status": "failed"}`) // TODO: provide detailed error message
 	}
-	if config.LogFile == logConfig.LogFile &&
-		config.LogPattern == logConfig.LogPattern &&
-		stringSliceEqual(config.LogFormat, logConfig.LogFormat) &&
-		config.TimeFormat == logConfig.TimeFormat { // TODO: check config values
-		return []byte(`{"status": "successful"}`) // TODO: return unchanged?
-	}
+	//if config.LogFile == logConfig.LogFile && // TODO: add later
+	//	config.LogPattern == logConfig.LogPattern &&
+	//	stringSliceEqual(config.LogFormat, logConfig.LogFormat) &&
+	//	config.TimeFormat == logConfig.TimeFormat { // TODO: check config values
+	//	return []byte(`{"status": "successful"}`) // TODO: return unchanged?
+	//}
 
 	// Write to config file
 	file, err := os.Create(logConfigFile)

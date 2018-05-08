@@ -22,6 +22,9 @@ type State = {
 
 class LogFormat extends React.Component<Props, State> {
   state = {
+    logFile: '',
+    logPattern: '',
+    logFormat: [],
     timeFormat: '02/Jan/2006:15:04:05 -0700',
   };
 
@@ -136,7 +139,7 @@ class LogFormat extends React.Component<Props, State> {
             extra={
               <div>
                 <p>A regular expression that matches the <b>Log Format</b> below.</p>
-                <p>The regexp grammar should be compatible with Golang's regexp grammar, which can be found <a href="https://github.com/google/re2/wiki/Syntax" target="_blank">here</a>.</p>
+                <p>The regexp grammar should be compatible with Golang&#39;s regexp grammar, which can be found <a href="https://github.com/google/re2/wiki/Syntax" target="_blank" rel="noopener noreferrer">here</a>.</p>
               </div>
             }
           >
@@ -180,7 +183,7 @@ class LogFormat extends React.Component<Props, State> {
             extra={
               <div>
                 <p>Format of the time string in <b>Time</b> field above.</p>
-                <p>You can find some common used formats <a href="https://golang.org/src/time/format.go?s=3204:3228#L64" target="_blank">here</a>, and you can also utilize the <a href="https://golang.org/src/time/format.go?s=3989:3996#L84" target="_blank">constants</a> below to create your own format.</p>
+                <p>You can find some common used formats <a href="https://golang.org/src/time/format.go?s=3204:3228#L64" target="_blank" rel="noopener noreferrer">here</a>, and you can also utilize the <a href="https://golang.org/src/time/format.go?s=3989:3996#L84" target="_blank" rel="noopener noreferrer">constants</a> below to create your own format.</p>
                 <p>Just be aware you can only use the specific time point - <b>2006-01-02 15:04:05</b>, which is the birthday of Golang.</p>
               </div>
             }
