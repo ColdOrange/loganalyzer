@@ -193,7 +193,7 @@ class Database extends React.Component<Props, State> {
             }
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>
-            <Button type="primary" htmlType="submit">Submit</Button>
+            <Button type="primary" htmlType="submit">Save</Button>
           </Form.Item>
         </Form>
       </ContentCard>

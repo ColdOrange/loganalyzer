@@ -77,9 +77,14 @@ func loadDBConfig() {
 
 	// Open DB
 	log.Debugln("Open DB")
-	db, err = sql.Open(dbConfig.Driver, fmt.Sprintf("%s:%s@/%s", dbConfig.Username, dbConfig.Password, dbConfig.Database))
+	db, err = sql.Open(dbConfig.Driver, fmt.Sprintf("%s:%s@/%s?multiStatements=true", dbConfig.Username, dbConfig.Password, dbConfig.Database))
 	if err != nil {
 		log.Fatalln("Open DB error:", err)
+	}
+	// Create reports table
+	_, err = db.Exec(createReportsTable)
+	if err != nil {
+		log.Fatalln("Create reports table error:", err)
 	}
 }
 
@@ -145,12 +150,25 @@ func setDBConfig(data []byte) []byte { // TODO: maybe this function is too long
 		return []byte(`{"status": "failed"}`)
 	}
 
-	// Uninitialized, just open DB
+	// Uninitialized, create and open DB
 	if dbConfig.Initialized == false {
-		log.Debugln("Open DB")
-		db, err = sql.Open(config.Driver, fmt.Sprintf("%s:%s@/%s", config.Username, config.Password, config.Database))
+		log.Debugln("Create and open DB")
+		db, err = sql.Open(config.Driver, fmt.Sprintf("%s:%s@/?multiStatements=true", config.Username, config.Password))
 		if err != nil {
 			log.Fatalln("Open DB error:", err)
+		}
+		_, err = db.Exec("CREATE DATABASE " + config.Database)
+		if err != nil {
+			log.Fatalln("Create new DB error:", err)
+		}
+		_, err = db.Exec("USE " + config.Database)
+		if err != nil {
+			log.Fatalln("USE new DB error:", err)
+		}
+		// Create reports table
+		_, err = db.Exec(createReportsTable)
+		if err != nil {
+			log.Fatalln("Create reports table error:", err)
 		}
 		dbConfig = config
 		dbConfig.Initialized = true
@@ -163,7 +181,7 @@ func setDBConfig(data []byte) []byte { // TODO: maybe this function is too long
 		log.Errorln("Close old DB error:", err)
 		//return []byte(`{"status": "failed"}`) // TODO: is it OK not to return error?
 	}
-	db, err = sql.Open(config.Driver, fmt.Sprintf("%s:%s@/", config.Username, config.Password))
+	db, err = sql.Open(config.Driver, fmt.Sprintf("%s:%s@/?multiStatements=true", config.Username, config.Password))
 	if err != nil {
 		log.Errorln("Open DB error:", err)
 		return []byte(`{"status": "failed"}`)
@@ -182,10 +200,90 @@ func setDBConfig(data []byte) []byte { // TODO: maybe this function is too long
 	}
 	_, err = db.Exec("USE " + config.Database)
 	if err != nil {
-		log.Fatalln("USE new DB error:", err)
+		log.Errorln("USE new DB error:", err)
+		return []byte(`{"status": "failed"}`)
+	}
+	// Create reports table
+	_, err = db.Exec(createReportsTable)
+	if err != nil {
+		log.Errorln("Create reports table error:", err)
 		return []byte(`{"status": "failed"}`)
 	}
 	dbConfig = config
 	dbConfig.Initialized = true
+	return []byte(`{"status": "successful"}`)
+}
+
+func getLogConfig() []byte {
+	data, err := json.Marshal(logConfig)
+	if err != nil {
+		log.Errorln("Marshal DBConfig error:", err)
+		return []byte(`{"status": "failed"}`)
+	}
+	return data
+}
+
+func stringSliceEqual(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
+func setLogConfig(data []byte) []byte {
+	var config LogConfig
+	// Unmarshal
+	err := json.Unmarshal(data, &config)
+	if err != nil {
+		log.Errorln("Unmarshal LogConfig error:", err)
+		return []byte(`{"status": "failed"}`) // TODO: provide detailed error message
+	}
+	if config.LogFile == logConfig.LogFile &&
+		config.LogPattern == logConfig.LogPattern &&
+		stringSliceEqual(config.LogFormat, logConfig.LogFormat) &&
+		config.TimeFormat == logConfig.TimeFormat { // TODO: check config values
+		return []byte(`{"status": "successful"}`) // TODO: return unchanged?
+	}
+
+	// Write to config file
+	file, err := os.Create(logConfigFile)
+	if err != nil {
+		log.Errorln("Create LogConfig file error:", err)
+		return []byte(`{"status": "failed"}`)
+	}
+	_, err = file.Write(data)
+	if err != nil {
+		log.Errorln("Write LogConfig file error:", err)
+		file.Close()
+		return []byte(`{"status": "failed"}`)
+	}
+	err = file.Close()
+	if err != nil {
+		log.Errorln("Close LogConfig file error:", err)
+		return []byte(`{"status": "failed"}`)
+	}
+
+	// Insert into reports table
+	res, err := db.Exec("INSERT INTO reports (file) VALUES (?)", config.LogFile)
+	if err != nil {
+		log.Errorln("Insert into reports table error:", err)
+		return []byte(`{"status": "failed"}`)
+	}
+	id, err := res.LastInsertId()
+	if err != nil {
+		log.Errorln("Get last insert id error:", err)
+		return []byte(`{"status": "failed"}`)
+	}
+
+	// Start analyze
+	go Analyze(int(id))
+
+	logConfig = config
+	logConfig.Initialized = true
 	return []byte(`{"status": "successful"}`)
 }

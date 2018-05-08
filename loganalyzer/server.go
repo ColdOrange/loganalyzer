@@ -25,6 +25,22 @@ func handlerDatabaseConfig(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Log Format Config
+func handlerLogFormatConfig(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	if r.Method == "GET" {
+		w.Write(getLogConfig())
+	} else if r.Method == "POST" {
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, "Error reading request body", http.StatusInternalServerError)
+		}
+		w.Write(setLogConfig(body))
+	} else {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+	}
+}
+
 // Summary
 func handlerSummary(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -278,6 +294,7 @@ func handlerReferringURL(w http.ResponseWriter, r *http.Request) {
 func NewServer(addr string) *http.Server {
 	handler := NewHandler()
 	handler.Bind("/api/config/database", handlerDatabaseConfig)
+	handler.Bind("/api/config/log-format", handlerLogFormatConfig)
 	handler.Bind("/api/summary", handlerSummary)
 	handler.Bind("/api/page-views/daily", handlerPageViewsDaily)
 	handler.Bind("/api/page-views/hourly", handlerPageViewsHourly)
