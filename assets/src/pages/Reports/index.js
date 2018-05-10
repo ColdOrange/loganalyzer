@@ -6,6 +6,7 @@ import { Table } from 'antd';
 
 import ContentCard from 'components/ContentCard';
 import { confirm, success, error as modalError, fetchError } from 'utils/Modal';
+import styles from './index.css';
 
 type State = {
   data: {
@@ -25,12 +26,12 @@ class Reports extends React.Component<{}, State> { // TODO: selection
     {
       title: 'Id',
       dataIndex: 'id',
-      width: '15%',
+      width: '10%',
     },
     {
       title: 'Log File',
       dataIndex: 'file',
-      width: '55%',
+      width: '60%',
     },
     {
       title: 'Action',
@@ -117,6 +118,7 @@ class Reports extends React.Component<{}, State> { // TODO: selection
           columns={this.columns}
           loading={loading}
           rowKey="id"
+          className={styles.table}
         />
       </ContentCard>
     );

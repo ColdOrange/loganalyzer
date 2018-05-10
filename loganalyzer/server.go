@@ -307,7 +307,7 @@ func NewServer(addr string) *http.Server {
 	handler := NewHandler()
 	handler.Bind("/api/config/database", handlerDatabaseConfig)
 	handler.Bind("/api/config/log-format", handlerLogFormatConfig)
-	handler.Bind("/api/reports$", handlerReports) // $ for exact match
+	handler.Bind("/api/reports$", handlerReports) // `$`(match end) for exact match
 	handler.Bind("/api/reports/[0-9]+/summary", handlerSummary)
 	handler.Bind("/api/reports/[0-9]+/page-views/daily", handlerPageViewsDaily)
 	handler.Bind("/api/reports/[0-9]+/page-views/hourly", handlerPageViewsHourly)

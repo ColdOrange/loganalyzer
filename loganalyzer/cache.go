@@ -1,20 +1,34 @@
 package loganalyzer
 
-type Cache map[string][]byte
+import "sync"
+
+type Cache struct {
+	cache map[string][]byte
+	mutex *sync.RWMutex
+}
 
 func (c Cache) Exist(key string) bool {
-	return c[key] != nil
+	c.mutex.RLock()
+	defer c.mutex.RUnlock()
+	return c.cache[key] != nil
 }
 
 func (c Cache) Get(key string) []byte {
-	return c[key]
+	c.mutex.RLock()
+	defer c.mutex.RUnlock()
+	return c.cache[key]
 }
 
 func (c Cache) Set(key string, value []byte) {
-	c[key] = value
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+	c.cache[key] = value
 }
 
 func NewCache() *Cache {
-	cache := make(Cache)
-	return &cache
+	cache := &Cache{
+		cache: make(map[string][]byte),
+		mutex: new(sync.RWMutex),
+	}
+	return cache
 }
