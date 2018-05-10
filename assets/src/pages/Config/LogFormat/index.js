@@ -172,7 +172,7 @@ class LogFormat extends React.Component<Props, State> {
                   <Option value="ResponseTime">ResponseTime</Option>
                   <Option value="ContentSize">ContentSize</Option>
                   <Option value="UserAgent">UserAgent</Option>
-                  <Option value="Referer">Referer</Option>
+                  <Option value="Referrer">Referrer</Option>
                 </Select>
               )
             }

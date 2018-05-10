@@ -13,7 +13,7 @@ import Bandwidth from 'pages/Bandwidth';
 import Request from 'pages/Request';
 import Response from 'pages/Response';
 import UserAgent from 'pages/UserAgent';
-import Referer from 'pages/Referer';
+import Referrer from 'pages/Referrer';
 import NotFound from 'pages/NotFound';
 
 type Props = {
@@ -86,10 +86,10 @@ class ReportLayout extends React.Component<Props, State> {
                 <span className="nav-text">User Agent</span>
               </Link>
             </Menu.Item>
-            <Menu.Item key={`/reports/${id}/referer`}>
-              <Link to={`/reports/${id}/referer`}>
+            <Menu.Item key={`/reports/${id}/referrer`}>
+              <Link to={`/reports/${id}/referrer`}>
                 <Icon type="swap" />
-                <span className="nav-text">Referer</span>
+                <span className="nav-text">Referrer</span>
               </Link>
             </Menu.Item>
           </Sidebar>
@@ -103,7 +103,7 @@ class ReportLayout extends React.Component<Props, State> {
               <Route path="/reports/:id/request" component={Request} />
               <Route path="/reports/:id/response" component={Response} />
               <Route path="/reports/:id/user-agent" component={UserAgent} />
-              <Route path="/reports/:id/referer" component={Referer} />
+              <Route path="/reports/:id/referrer" component={Referrer} />
               <Route component={NotFound} />
             </Switch>
           </Page>

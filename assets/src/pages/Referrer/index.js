@@ -11,7 +11,7 @@ type Props = {
   match: Object,
 }
 
-class Referer extends React.Component<Props> {
+class Referrer extends React.Component<Props> {
   error = false;
 
   // Handle error in parent component, in case it will show several times in children
@@ -39,4 +39,4 @@ class Referer extends React.Component<Props> {
   }
 }
 
-export default Referer;
+export default Referrer;

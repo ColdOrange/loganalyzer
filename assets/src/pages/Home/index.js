@@ -14,7 +14,7 @@ const imageUrls = [
   '/static/images/screenshot/request.jpg',
   '/static/images/screenshot/response.jpg',
   '/static/images/screenshot/user-agent.jpg',
-  '/static/images/screenshot/referer.jpg',
+  '/static/images/screenshot/referrer.jpg',
 ];
 
 class Home extends React.Component<{}> {

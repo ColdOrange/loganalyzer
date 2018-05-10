@@ -47,7 +47,7 @@ class ReferringSite extends React.Component<Props, State> {
 
   loadData = () => {
     const id = this.props.match.params.id;
-    fetch(`/api/reports/${id}/referer/site`)
+    fetch(`/api/reports/${id}/referrer/site`)
       .then(response => response.json())
       .then(
         data => {

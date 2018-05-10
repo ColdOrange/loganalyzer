@@ -164,7 +164,7 @@ ReadLog:
 					continue ReadLog
 				}
 				values = append(values, uaDevice)
-			case "Referer":
+			case "Referrer":
 				if fields[j] == "-" {
 					values = append(values, "", "", "")
 					continue
@@ -180,18 +180,18 @@ ReadLog:
 				}
 				site := u.Scheme + "://" + u.Host
 				if len(site) > 255 {
-					log.Debugf("[Referer.Site] exceed max length (255, got %d) at line %d", len(site), i)
+					log.Debugf("[Referrer.Site] exceed max length (255, got %d) at line %d", len(site), i)
 					continue ReadLog
 				}
 				values = append(values, site)
 				path := site + u.Path
 				if len(path) > 255 {
-					log.Debugf("[Referer.Path] exceed max length (255, got %d) at line %d", len(path), i)
+					log.Debugf("[Referrer.Path] exceed max length (255, got %d) at line %d", len(path), i)
 					continue ReadLog
 				}
 				values = append(values, path)
 				if len(u.RawQuery) > 255 {
-					log.Debugf("[Referer.Query] exceed max length (255, got %d) at line %d", len(u.RawQuery), i)
+					log.Debugf("[Referrer.Query] exceed max length (255, got %d) at line %d", len(u.RawQuery), i)
 					continue ReadLog
 				}
 				values = append(values, u.RawQuery)

@@ -275,7 +275,7 @@ func handlerBrowser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Referer
+// Referrer
 func handlerReferringSite(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if cache.Exist(r.RequestURI) {
@@ -328,8 +328,8 @@ func NewServer(addr string) *http.Server {
 	handler.Bind("/api/reports/[0-9]+/user-agent/os", handlerOperatingSystem)
 	handler.Bind("/api/reports/[0-9]+/user-agent/device", handlerDevice)
 	handler.Bind("/api/reports/[0-9]+/user-agent/browser", handlerBrowser)
-	handler.Bind("/api/reports/[0-9]+/referer/site", handlerReferringSite)
-	handler.Bind("/api/reports/[0-9]+/referer/url", handlerReferringURL)
+	handler.Bind("/api/reports/[0-9]+/referrer/site", handlerReferringSite)
+	handler.Bind("/api/reports/[0-9]+/referrer/url", handlerReferringURL)
 
 	cache = NewCache()
 

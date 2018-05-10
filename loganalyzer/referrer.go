@@ -13,7 +13,7 @@ type ReferringSite struct {
 }
 
 func referringSite(table string) []byte {
-	rows, err := db.Query("SELECT referer_site, count(*) as count, count(distinct(ip)) FROM " + table + " WHERE referer_site != '' GROUP BY referer_site ORDER BY count DESC")
+	rows, err := db.Query("SELECT referrer_site, count(*) as count, count(distinct(ip)) FROM " + table + " WHERE referrer_site != '' GROUP BY referrer_site ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)
@@ -54,7 +54,7 @@ type ReferringURL struct {
 }
 
 func referringURL(table string) []byte {
-	rows, err := db.Query("SELECT referer_path, count(*) as count, count(distinct(ip)) FROM " + table + " WHERE referer_path != '' GROUP BY referer_path ORDER BY count DESC")
+	rows, err := db.Query("SELECT referrer_path, count(*) as count, count(distinct(ip)) FROM " + table + " WHERE referrer_path != '' GROUP BY referrer_path ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
 		return []byte(`{"status": "failed"}`)
