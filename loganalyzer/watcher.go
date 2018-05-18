@@ -28,15 +28,15 @@ func StartWebpackWatcher() {
 		return
 	}
 
+	go copyOutput(stdout)
+	go copyOutput(stderr)
+
 	err = cmd.Start()
 	if err != nil {
 		log.Errorln("Start webpack watcher error:", err)
 		return
 	}
 	log.Infoln("Webpack start watching files")
-
-	go copyOutput(stdout)
-	go copyOutput(stderr)
 
 	err = cmd.Wait()
 	if err != nil {
