@@ -13,8 +13,8 @@ type Report struct {
 
 func reports() []byte {
 	if db == nil {
-		log.Errorln("DB uninitialized")
-		return jsonError("DB uninitialized")
+		log.Errorln("Database uninitialized")
+		return jsonError("Database uninitialized")
 	}
 
 	rows, err := db.Query("SELECT id, file FROM reports ORDER BY id ASC")

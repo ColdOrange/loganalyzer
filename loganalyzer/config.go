@@ -105,19 +105,33 @@ func loadDBConfig() {
 func loadLogConfig() {
 	data, err := ioutil.ReadFile(logConfigFile)
 	if os.IsNotExist(err) {
-		log.Debugln("Log config file not found, uninitialized")
+		log.Debugln("Log config file not found, use default config")
+		useDefaultLogConfig()
 		return
 	}
 	if err != nil {
-		log.Errorf("Read LogConfig file error: %v, uninitialized", err)
+		log.Errorf("Read LogConfig file error: %v, use default config", err)
+		useDefaultLogConfig()
 		return
 	}
 	err = json.Unmarshal(data, &logConfig)
 	if err != nil {
-		log.Errorf("Unmarshal LogConfig file error: %v, uninitialized", err)
+		log.Errorf("Unmarshal LogConfig file error: %v, use default config", err)
+		useDefaultLogConfig()
+	}
+}
+
+func useDefaultLogConfig() {
+	sampleLogFile, err := filepath.Abs(path.Join(ProjectPath, "sample/sample.log"))
+	if err != nil {
+		log.Errorf("Resolve sample log file path error: %v, LogConfig uninitialized", err)
 		return
 	}
 	logConfig.Initialized = true
+	logConfig.LogFile = sampleLogFile
+	logConfig.LogPattern = "(.*) - - \\[(.*)\\] \"(.*) (.*) (.*)\" (.*) (.*) \"(.*)\" \"(.*)\" (.*)"
+	logConfig.LogFormat = []string{"IP", "Time", "RequestMethod", "RequestURL", "HTTPVersion", "ResponseCode", "ContentSize", "Referrer", "UserAgent", "ResponseTime"}
+	logConfig.TimeFormat = "02/Jan/2006:15:04:05 -0700"
 }
 
 func getDBConfig() []byte {
@@ -137,10 +151,10 @@ func setDBConfig(data []byte) []byte {
 		return jsonError("Unmarshal DBConfig error", err)
 	}
 
-	if dbConfigUnchanged(&config) {
-		log.Debugln("DBConfig unchanged")
-		return jsonSuccess() // TODO: maybe put config unchanged in success message?
-	}
+	//if dbConfigUnchanged(&config) { // TODO: not stable
+	//	log.Debugln("DBConfig unchanged")
+	//	return jsonSuccess() // TODO: maybe put config unchanged in success message?
+	//}
 
 	// Write to config file
 	file, err := os.Create(dbConfigFile)
@@ -261,10 +275,11 @@ func setLogConfig(data []byte) []byte {
 		log.Errorln("Unmarshal LogConfig error:", err)
 		return jsonError("Unmarshal LogConfig error", err)
 	}
-	if logConfigUnchanged(&config) {
-		log.Debugln("LogConfig unchanged")
-		return jsonSuccess()
-	}
+
+	//if logConfigUnchanged(&config) {
+	//	log.Debugln("LogConfig unchanged")
+	//	return jsonSuccess()
+	//}
 
 	// Write to config file
 	file, err := os.Create(logConfigFile)
@@ -281,6 +296,10 @@ func setLogConfig(data []byte) []byte {
 	}
 
 	// Insert into reports table
+	if db == nil {
+		log.Errorln("Database uninitialized")
+		return jsonError("Database uninitialized")
+	}
 	res, err := db.Exec("INSERT INTO reports (file) VALUES (?)", config.LogFile)
 	if err != nil {
 		log.Errorln("Insert into reports table error:", err)

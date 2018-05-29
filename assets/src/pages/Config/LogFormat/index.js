@@ -26,7 +26,7 @@ class LogFormat extends React.Component<Props, State> {
     logFile: '',
     logPattern: '',
     logFormat: [],
-    timeFormat: '02/Jan/2006:15:04:05 -0700',
+    timeFormat: '',
     spinning: false,
   };
 
@@ -38,7 +38,7 @@ class LogFormat extends React.Component<Props, State> {
           if (data.status === 'failed') { // Server API error
             console.log('Server API error');
           }
-          else if (data.initialized === true) {
+          else {
             this.setState(data);
           }
         },
