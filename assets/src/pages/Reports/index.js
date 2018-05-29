@@ -61,12 +61,18 @@ class Reports extends React.Component<{}, State> { // TODO: multi-select to dele
                   title: 'Success',
                   content: 'Delete report successfully!',
                 });
+                const removed = this.state.data.filter((e) => {
+                  return e.id !== id;
+                });
+                this.setState({ data: removed });
               }
               else {
+                const errorMessage = data.errors != null ? 'Error message: ' + data.errors.join(': ') : '';
                 modalError({
                   title: 'Error',
-                  content: 'Delete report failed, please again try later.',
+                  content: <div><p>Delete report failed.</p>{errorMessage}</div>,
                 });
+                console.log('Server API error');
               }
             },
             error => { // Fetch error

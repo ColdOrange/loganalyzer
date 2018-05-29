@@ -87,7 +87,7 @@ class LogFormat extends React.Component<Props, State> {
     event.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        // this.setState({ ...values, spinning: true }, () => {
+        // this.setState({ ...values, spinning: true }, () => { // TODO: setState is asnyc, does it matters?
         //   this.postData(values);
         // });
         this.setState({ ...values, spinning: true });

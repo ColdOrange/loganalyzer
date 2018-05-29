@@ -48,6 +48,15 @@ func handlerReports(w http.ResponseWriter, _ *http.Request) {
 	w.Write(reports())
 }
 
+func handlerReportsDelete(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "DELETE" {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(reportsDelete(getLogTableFromURL(r.URL.Path)))
+}
+
 // Summary
 func handlerSummary(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -299,7 +308,14 @@ func handlerReferringURL(w http.ResponseWriter, r *http.Request) {
 }
 
 func getLogTableFromURL(url string) string {
-	id := url[13 : 13+strings.Index(url[13:], "/")]
+	start := len("/api/reports/")
+	length := strings.Index(url[start:], "/")
+	var id string
+	if length == -1 {
+		id = url[start:]
+	} else {
+		id = url[start : start+length]
+	}
 	return "log_" + id
 }
 
@@ -308,6 +324,7 @@ func NewServer(addr string) *http.Server {
 	handler.Bind("/api/config/database", handlerDatabaseConfig)
 	handler.Bind("/api/config/log-format", handlerLogFormatConfig)
 	handler.Bind("/api/reports$", handlerReports) // `$`(match end) for exact match
+	handler.Bind("/api/reports/[0-9]+$", handlerReportsDelete)
 	handler.Bind("/api/reports/[0-9]+/summary", handlerSummary)
 	handler.Bind("/api/reports/[0-9]+/page-views/daily", handlerPageViewsDaily)
 	handler.Bind("/api/reports/[0-9]+/page-views/hourly", handlerPageViewsHourly)

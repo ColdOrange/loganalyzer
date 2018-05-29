@@ -49,3 +49,21 @@ func reports() []byte {
 	}
 	return data
 }
+
+func reportsDelete(logTable string) []byte {
+	// Drop log table
+	_, err := db.Exec("DROP TABLE IF EXISTS " + logTable)
+	if err != nil {
+		log.Errorln("Drop log table error:", err)
+		return jsonError("Drop log table error", err)
+	}
+
+	// Delete log id from reports table
+	_, err = db.Exec("DELETE FROM reports WHERE id=" + logTable[4:])
+	if err != nil {
+		log.Errorln("Delete log id from reports error:", err)
+		return jsonError("Delete log id from reports error", err)
+	}
+
+	return jsonSuccess()
+}
