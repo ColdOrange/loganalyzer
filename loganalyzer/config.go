@@ -51,6 +51,16 @@ func init() {
 	}
 	log.Debugln("Project root path:", ProjectPath)
 
+	// Create config directory if not exists
+	configDir := path.Join(ProjectPath, "config")
+	_, err = os.Stat(configDir)
+	if os.IsNotExist(err) {
+		if os.Mkdir(configDir, 0755) != nil {
+			log.Fatalln("Create config directory error")
+		}
+		log.Debugln("Create config directory")
+	}
+
 	// Load Config
 	dbConfigFile = path.Join(ProjectPath, "config/db_config.json")
 	loadDBConfig()

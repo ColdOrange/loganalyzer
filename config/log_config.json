@@ -1,1 +1,0 @@
-{"logFile":"/Users/Orange/Desktop/毕设/log/ssg-surfer/apache-access.log.gen","logPattern":"(.*) - - \\[(.*)\\] \"(.*) (.*) (.*)\" (.*) (.*) \"(.*)\" \"(.*)\" (.*)","logFormat":["IP","Time","RequestMethod","RequestURL","HTTPVersion","ResponseCode","ContentSize","Referrer","UserAgent","ResponseTime"],"timeFormat":"02/Jan/2006:15:04:05 -0700"}

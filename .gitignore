@@ -8,6 +8,9 @@ assets/static/css/**
 assets/static/js/**
 assets/yarn-error.log
 
+# config
+config/
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
