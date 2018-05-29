@@ -2,6 +2,7 @@ package loganalyzer
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -17,20 +18,22 @@ import (
 	log "loganalyzer/loganalyzer/logging"
 )
 
-func Analyze(id int) {
+func Analyze(id int) error {
 	log.Infof("Starting analyzing log file [%s]", logConfig.LogFile)
 	zero := time.Now()
 
 	// Compile log pattern
 	pattern, err := regexp.Compile(logConfig.LogPattern)
 	if err != nil {
-		log.Fatalln("Log pattern compile error:", err)
+		log.Errorln("Log pattern compile error:", err)
+		return errors.New("Log pattern compile error: " + err.Error())
 	}
 
 	// Create log table
 	_, err = db.Exec(createLogTable(strconv.Itoa(id)))
 	if err != nil {
-		log.Fatalln("Create log table error:", err)
+		log.Errorln("Create log table error:", err)
+		return errors.New("Create log table error: " + err.Error())
 	}
 
 	// Prepare `batch` insert stmt
@@ -39,14 +42,16 @@ func Analyze(id int) {
 	var batchValues []interface{}
 	stmt, err := db.Prepare(prepareBatchInsertStmt(id, batchSize))
 	if err != nil {
-		log.Fatalln("DB insert stmt prepare error:", err)
+		log.Errorln("Prepare DB insert stmt error:", err)
+		return errors.New("Prepare DB insert stmt error: " + err.Error())
 	}
 	defer stmt.Close()
 
 	// Open log file
 	file, err := os.Open(logConfig.LogFile)
 	if err != nil {
-		log.Fatalln("Log file open error:", err)
+		log.Errorln("Open log file error:", err)
+		return errors.New("Open log file error: " + err.Error())
 	}
 	defer file.Close()
 
@@ -171,7 +176,7 @@ ReadLog:
 				}
 				u, err := url.Parse(fields[j])
 				if err != nil {
-					log.Warnf("[Refer] format wrong at line %d", i)
+					log.Warnf("[Referrer] format wrong at line %d", i)
 					continue ReadLog
 				}
 				if u.Scheme == "" { // workaround
@@ -214,7 +219,8 @@ ReadLog:
 	if batch != 0 { // Last batch insert
 		stmt, err := db.Prepare(prepareBatchInsertStmt(id, batch))
 		if err != nil {
-			log.Fatalln("DB insert stmt prepare error:", err)
+			log.Errorln("Prepare DB insert stmt error:", err)
+			return errors.New("Prepare DB insert stmt error: " + err.Error())
 		}
 		defer stmt.Close()
 		_, err = stmt.Exec(batchValues...)
@@ -225,6 +231,7 @@ ReadLog:
 
 	log.Debugln("Finished inserting into DB")
 	log.Infof("Finished analyzing log file in %.3fs", time.Since(zero).Seconds())
+	return nil
 }
 
 func prepareBatchInsertStmt(id int, batchSize int) string {

@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import { Button, Form, Input, Select } from 'antd';
+import { Button, Icon, Form, Modal, Input, Select, Spin } from 'antd';
 
 import ContentCard from 'components/ContentCard';
 import { success, error as modalError } from 'utils/Modal';
@@ -18,6 +18,7 @@ type State = {
   logPattern: string,
   logFormat: string[], // TODO: validator
   timeFormat: string,
+  spinning: boolean,
 }
 
 class LogFormat extends React.Component<Props, State> {
@@ -26,6 +27,7 @@ class LogFormat extends React.Component<Props, State> {
     logPattern: '',
     logFormat: [],
     timeFormat: '02/Jan/2006:15:04:05 -0700',
+    spinning: false,
   };
 
   loadData = () => {
@@ -51,26 +53,30 @@ class LogFormat extends React.Component<Props, State> {
       body: JSON.stringify(data),
       method: 'POST',
     })
-      .then(response => response.json())
+      .then(response => {
+        this.setState({ spinning: false });
+        return response.json();
+      })
       .then(
         data => {
           if (data.status === 'successful') {
             success({
               title: 'Success',
-              content: 'Submit log format configuration successfully!',
+              content: 'Generate report successfully!',
             });
           }
           else {
+            const errorMessage = data.errors != null ? 'Error message: ' + data.errors.join(': ') : '';
             modalError({
               title: 'Error',
-              content: 'Submit log format configuration failed, please again try later.',
+              content: <div><p>Generate report failed.</p>{errorMessage}</div>,
             });
           }
         },
         error => { // Fetch error
           modalError({
             title: 'Error',
-            content: 'Submit log format configuration failed, please again try later.',
+            content: 'Generate report failed.',
           });
           console.log(error);
         }
@@ -81,7 +87,10 @@ class LogFormat extends React.Component<Props, State> {
     event.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        this.setState(values);
+        // this.setState({ ...values, spinning: true }, () => {
+        //   this.postData(values);
+        // });
+        this.setState({ ...values, spinning: true });
         this.postData(values);
       }
     });
@@ -201,6 +210,15 @@ class LogFormat extends React.Component<Props, State> {
             <Button type="primary" htmlType="submit">Generate Report</Button>
           </Form.Item>
         </Form>
+        <Modal
+          visible={this.state.spinning}
+          title={<Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} />}
+          footer={null}
+          closable={false}
+          width={416}
+        >
+          <p>Analyzing log file, please wait for a while...</p>
+        </Modal>
       </ContentCard>
     );
   }

@@ -59,16 +59,17 @@ class Database extends React.Component<Props, State> {
             });
           }
           else {
+            const errorMessage = data.errors != null ? 'Error message: ' + data.errors.join(': ') : '';
             modalError({
               title: 'Error',
-              content: 'Submit database configuration failed, please again try later.',
+              content: <div><p>Submit database configuration failed.</p>{errorMessage}</div>,
             });
           }
         },
         error => { // Fetch error
           modalError({
             title: 'Error',
-            content: 'Submit database configuration failed, please again try later.',
+            content: 'Submit database configuration failed.',
           });
           console.log(error);
         }

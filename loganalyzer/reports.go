@@ -12,6 +12,11 @@ type Report struct {
 }
 
 func reports() []byte {
+	if db == nil {
+		log.Errorln("DB uninitialized")
+		return jsonError("DB uninitialized")
+	}
+
 	rows, err := db.Query("SELECT id, file FROM reports ORDER BY id ASC")
 	if err != nil {
 		log.Errorln("DB query error:", err)

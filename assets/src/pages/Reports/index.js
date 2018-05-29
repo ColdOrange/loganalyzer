@@ -87,7 +87,11 @@ class Reports extends React.Component<{}, State> { // TODO: selection
       .then(
         data => {
           if (data && data.status === 'failed') { // Server API error // TODO: data == null
-            fetchError();
+            const errorMessage = data.errors != null ? 'Error message: ' + data.errors.join(': ') : '';
+            modalError({
+              title: 'Error',
+              content: <div><p>View reports failed.</p>{errorMessage}</div>,
+            });
             console.log('Server API error');
           }
           else {

@@ -49,7 +49,7 @@ func summary(table string) []byte {
 		return []byte(`{"status": "failed"}`)
 	}
 
-	row = db.QueryRow("SELECT count(*), count(distinct(ip)), sum(content_size) FROM " + table + "")
+	row = db.QueryRow("SELECT count(*), count(distinct(ip)), sum(content_size) FROM " + table)
 	err = row.Scan(&summary.PageViews, &summary.UserViews, &summary.Bandwidth)
 	if err != nil {
 		log.Errorln("DB query error:", err)
