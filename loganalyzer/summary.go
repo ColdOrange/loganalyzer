@@ -24,14 +24,14 @@ func summary(table string) []byte {
 
 	file, err := os.Open(logConfig.LogFile)
 	if err != nil {
-		log.Errorln("Log file open error:", err)
-		return []byte(`{"status": "failed"}`)
+		log.Errorln("Open log file error:", err)
+		return jsonError("Open log file error", err)
 	}
 	defer file.Close()
 	stat, err := file.Stat()
 	if err != nil {
 		log.Errorln("Get file stat error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("Get file stat error", err)
 	}
 	summary.FileSize = stat.Size()
 
@@ -39,27 +39,27 @@ func summary(table string) []byte {
 	err = row.Scan(&summary.StartTime)
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	row = db.QueryRow("SELECT time FROM " + table + " ORDER BY id DESC LIMIT 1")
 	err = row.Scan(&summary.EndTime)
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	row = db.QueryRow("SELECT count(*), count(distinct(ip)), sum(content_size) FROM " + table)
 	err = row.Scan(&summary.PageViews, &summary.UserViews, &summary.Bandwidth)
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	data, err := json.Marshal(summary)
 	if err != nil {
-		log.Errorln("Summary json marshal error:", err)
-		return []byte(`{"status": "failed"}`)
+		log.Errorln("Json marshal error:", err)
+		return jsonError("Json marshal error", err)
 	}
 	return data
 }

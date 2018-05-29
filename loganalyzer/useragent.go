@@ -15,7 +15,7 @@ func operatingSystem(table string) []byte {
 	rows, err := db.Query("SELECT ua_os, count(*) as count FROM " + table + " WHERE ua_os != 'Unknown' GROUP BY ua_os ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	var (
@@ -27,20 +27,20 @@ func operatingSystem(table string) []byte {
 		err := rows.Scan(&os, &count)
 		if err != nil {
 			log.Errorln("DB query error:", err)
-			return []byte(`{"status": "failed"}`)
+			return jsonError("DB query error", err)
 		}
 		operatingSystem = append(operatingSystem, OperatingSystem{OS: os, Count: count})
 	}
 	err = rows.Err()
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	data, err := json.Marshal(operatingSystem)
 	if err != nil {
-		log.Errorln("OperatingSystem json marshal error:", err)
-		return []byte(`{"status": "failed"}`)
+		log.Errorln("Json marshal error:", err)
+		return jsonError("Json marshal error", err)
 	}
 	return data
 }
@@ -54,7 +54,7 @@ func device(table string) []byte {
 	rows, err := db.Query("SELECT ua_device, count(*) as count FROM " + table + " WHERE ua_device != 'Unknown' GROUP BY ua_device ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	var (
@@ -66,20 +66,20 @@ func device(table string) []byte {
 		err := rows.Scan(&device, &count)
 		if err != nil {
 			log.Errorln("DB query error:", err)
-			return []byte(`{"status": "failed"}`)
+			return jsonError("DB query error", err)
 		}
 		devices = append(devices, Device{Device: device, Count: count})
 	}
 	err = rows.Err()
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	data, err := json.Marshal(devices)
 	if err != nil {
-		log.Errorln("Device json marshal error:", err)
-		return []byte(`{"status": "failed"}`)
+		log.Errorln("Json marshal error:", err)
+		return jsonError("Json marshal error", err)
 	}
 	return data
 }
@@ -94,7 +94,7 @@ func browser(table string) []byte {
 	rows, err := db.Query("SELECT ua_browser, count(*) as count, count(distinct(ip)) FROM " + table + " WHERE ua_browser != 'Unknown' GROUP BY ua_browser ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	var (
@@ -107,20 +107,20 @@ func browser(table string) []byte {
 		err := rows.Scan(&browser, &pv, &uv)
 		if err != nil {
 			log.Errorln("DB query error:", err)
-			return []byte(`{"status": "failed"}`)
+			return jsonError("DB query error", err)
 		}
 		browsers = append(browsers, Browser{Browser: browser, PV: pv, UV: uv})
 	}
 	err = rows.Err()
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	data, err := json.Marshal(browsers)
 	if err != nil {
-		log.Errorln("Browser json marshal error:", err)
-		return []byte(`{"status": "failed"}`)
+		log.Errorln("Json marshal error:", err)
+		return jsonError("Json marshal error", err)
 	}
 	return data
 }

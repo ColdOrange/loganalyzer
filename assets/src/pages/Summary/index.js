@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import ContentCard from 'components/ContentCard';
 import KVCard from './components/KVCard';
-import { fetchError } from 'utils/Modal';
+import { error as modalError, fetchError } from 'utils/Modal';
 import { bandwidthFormatter } from 'utils/BandwidthFormatter';
 
 type Props = {
@@ -77,7 +77,11 @@ class Summary extends React.Component<Props, State> {
       .then(
         data => {
           if (data.status === 'failed') { // Server API error
-            fetchError();
+            const errorMessage = data.errors != null ? 'Error message: ' + data.errors.join(': ') : '';
+            modalError({
+              title: 'Error',
+              content: <div><p>View summary failed.</p>{errorMessage}</div>,
+            });
             console.log('Server API error');
           }
           else {

@@ -27,7 +27,7 @@ func userViewsQuery(query string, args ...interface{}) []byte {
 	rows, err := db.Query(query, args...)
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	var (
@@ -39,20 +39,20 @@ func userViewsQuery(query string, args ...interface{}) []byte {
 		err := rows.Scan(&t, &uv)
 		if err != nil {
 			log.Errorln("DB query error:", err)
-			return []byte(`{"status": "failed"}`)
+			return jsonError("DB query error", err)
 		}
 		userViews = append(userViews, UserViews{Time: t, UV: uv})
 	}
 	err = rows.Err()
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	data, err := json.Marshal(userViews)
 	if err != nil {
-		log.Errorln("UserViews json marshal error:", err)
-		return []byte(`{"status": "failed"}`)
+		log.Errorln("Json marshal error:", err)
+		return jsonError("Json marshal error", err)
 	}
 	return data
 }

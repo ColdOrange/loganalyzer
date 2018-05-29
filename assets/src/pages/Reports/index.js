@@ -16,7 +16,7 @@ type State = {
   isLoaded: boolean,
 }
 
-class Reports extends React.Component<{}, State> { // TODO: selection
+class Reports extends React.Component<{}, State> { // TODO: multi-select to delete
   state = {
     data: [],
     isLoaded: false,
@@ -86,7 +86,7 @@ class Reports extends React.Component<{}, State> { // TODO: selection
       .then(response => response.json())
       .then(
         data => {
-          if (data && data.status === 'failed') { // Server API error // TODO: data == null
+          if (data != null && data.status === 'failed') { // Server API error
             const errorMessage = data.errors != null ? 'Error message: ' + data.errors.join(': ') : '';
             modalError({
               title: 'Error',

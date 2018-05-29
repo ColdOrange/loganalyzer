@@ -17,7 +17,7 @@ func statusCode(table string) []byte {
 	rows, err := db.Query("SELECT response_code, count(*) as count FROM " + table + " GROUP BY response_code ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	var (
@@ -29,7 +29,7 @@ func statusCode(table string) []byte {
 		err := rows.Scan(&code, &count)
 		if err != nil {
 			log.Errorln("DB query error:", err)
-			return []byte(`{"status": "failed"}`)
+			return jsonError("DB query error", err)
 		}
 		statusText := strconv.Itoa(code) + " " + http.StatusText(code)
 		statusCode = append(statusCode, StatusCode{StatusCode: statusText, Count: count})
@@ -37,13 +37,13 @@ func statusCode(table string) []byte {
 	err = rows.Err()
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	data, err := json.Marshal(statusCode)
 	if err != nil {
-		log.Errorln("StatusCode json marshal error:", err)
-		return []byte(`{"status": "failed"}`)
+		log.Errorln("Json marshal error:", err)
+		return jsonError("Json marshal error", err)
 	}
 	return data
 }
@@ -68,7 +68,7 @@ func responseTime(table string) []byte {
 		"ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	var (
@@ -80,20 +80,20 @@ func responseTime(table string) []byte {
 		err := rows.Scan(&timeRange, &count)
 		if err != nil {
 			log.Errorln("DB query error:", err)
-			return []byte(`{"status": "failed"}`)
+			return jsonError("DB query error", err)
 		}
 		responseTime = append(responseTime, ResponseTime{TimeRange: timeRange, Count: count})
 	}
 	err = rows.Err()
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	data, err := json.Marshal(responseTime)
 	if err != nil {
-		log.Errorln("ResponseTime json marshal error:", err)
-		return []byte(`{"status": "failed"}`)
+		log.Errorln("Json marshal error:", err)
+		return jsonError("Json marshal error", err)
 	}
 	return data
 }
@@ -109,7 +109,7 @@ func responseURL(table string) []byte {
 	rows, err := db.Query("SELECT url_path, COUNT(*) AS pv, AVG(response_time), STD(response_time) FROM " + table + " WHERE url_is_static='0' GROUP BY url_path ORDER BY pv DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	var (
@@ -123,20 +123,20 @@ func responseURL(table string) []byte {
 		err := rows.Scan(&url, &pv, &avg, &stdDev)
 		if err != nil {
 			log.Errorln("DB query error:", err)
-			return []byte(`{"status": "failed"}`)
+			return jsonError("DB query error", err)
 		}
 		responseURL = append(responseURL, ResponseURL{URL: url, PV: pv, Avg: int64(avg), StdDev: int64(stdDev)})
 	}
 	err = rows.Err()
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	data, err := json.Marshal(responseURL)
 	if err != nil {
-		log.Errorln("ResponseURL json marshal error:", err)
-		return []byte(`{"status": "failed"}`)
+		log.Errorln("Json marshal error:", err)
+		return jsonError("Json marshal error", err)
 	}
 	return data
 }

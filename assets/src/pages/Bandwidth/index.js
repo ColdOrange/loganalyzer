@@ -16,7 +16,7 @@ class Bandwidth extends React.Component<Props> {
   error = false;
 
   // Handle error in parent component, in case it will show several times in children
-  errorHandler = () => {
+  errorHandler = () => { // TODO: add error message
     if (!this.error) {
       this.error = true;
       fetchError();

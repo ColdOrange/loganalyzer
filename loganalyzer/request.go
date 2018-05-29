@@ -15,7 +15,7 @@ func requestMethod(table string) []byte {
 	rows, err := db.Query("SELECT request_method, count(*) as count FROM " + table + " GROUP BY request_method ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	var (
@@ -27,20 +27,20 @@ func requestMethod(table string) []byte {
 		err := rows.Scan(&method, &count)
 		if err != nil {
 			log.Errorln("DB query error:", err)
-			return []byte(`{"status": "failed"}`)
+			return jsonError("DB query error", err)
 		}
 		requestMethod = append(requestMethod, RequestMethod{Method: method, Count: count})
 	}
 	err = rows.Err()
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	data, err := json.Marshal(requestMethod)
 	if err != nil {
-		log.Errorln("RequestMethod json marshal error:", err)
-		return []byte(`{"status": "failed"}`)
+		log.Errorln("Json marshal error:", err)
+		return jsonError("Json marshal error", err)
 	}
 	return data
 }
@@ -54,7 +54,7 @@ func httpVersion(table string) []byte {
 	rows, err := db.Query("SELECT http_version, count(*) as count FROM " + table + " GROUP BY http_version ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	var (
@@ -66,20 +66,20 @@ func httpVersion(table string) []byte {
 		err := rows.Scan(&version, &count)
 		if err != nil {
 			log.Errorln("DB query error:", err)
-			return []byte(`{"status": "failed"}`)
+			return jsonError("DB query error", err)
 		}
 		httpVersion = append(httpVersion, HTTPVersion{Version: version, Count: count})
 	}
 	err = rows.Err()
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	data, err := json.Marshal(httpVersion)
 	if err != nil {
-		log.Errorln("HTTPVersion json marshal error:", err)
-		return []byte(`{"status": "failed"}`)
+		log.Errorln("Json marshal error:", err)
+		return jsonError("Json marshal error", err)
 	}
 	return data
 }
@@ -95,7 +95,7 @@ func requestURL(table string) []byte {
 	rows, err := db.Query("SELECT url_path, count(*) as pv, count(distinct(ip)), sum(content_size) FROM " + table + " WHERE url_is_static='0' GROUP BY url_path ORDER BY pv DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	var (
@@ -109,20 +109,20 @@ func requestURL(table string) []byte {
 		err := rows.Scan(&url, &pv, &uv, &bandwidth)
 		if err != nil {
 			log.Errorln("DB query error:", err)
-			return []byte(`{"status": "failed"}`)
+			return jsonError("DB query error", err)
 		}
 		requestURL = append(requestURL, RequestURL{URL: url, PV: pv, UV: uv, Bandwidth: bandwidth})
 	}
 	err = rows.Err()
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	data, err := json.Marshal(requestURL)
 	if err != nil {
-		log.Errorln("RequestURL json marshal error:", err)
-		return []byte(`{"status": "failed"}`)
+		log.Errorln("Json marshal error:", err)
+		return jsonError("Json marshal error", err)
 	}
 	return data
 }
@@ -138,7 +138,7 @@ func staticFile(table string) []byte {
 	rows, err := db.Query("SELECT url_path, count(*) as count, sum(content_size) FROM " + table + " WHERE url_is_static='1' and response_code='200' GROUP BY url_path ORDER BY count DESC")
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	var (
@@ -151,7 +151,7 @@ func staticFile(table string) []byte {
 		err := rows.Scan(&file, &count, &bandwidth)
 		if err != nil {
 			log.Errorln("DB query error:", err)
-			return []byte(`{"status": "failed"}`)
+			return jsonError("DB query error", err)
 		}
 		size := bandwidth / count // Average size is OK
 		staticFile = append(staticFile, StaticFile{File: file, Count: count, Size: size, Bandwidth: bandwidth})
@@ -159,13 +159,13 @@ func staticFile(table string) []byte {
 	err = rows.Err()
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	data, err := json.Marshal(staticFile)
 	if err != nil {
-		log.Errorln("StaticFile json marshal error:", err)
-		return []byte(`{"status": "failed"}`)
+		log.Errorln("Json marshal error:", err)
+		return jsonError("Json marshal error", err)
 	}
 	return data
 }

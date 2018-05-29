@@ -27,7 +27,7 @@ func bandwidthQuery(query string, args ...interface{}) []byte {
 	rows, err := db.Query(query, args...)
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	var (
@@ -39,20 +39,20 @@ func bandwidthQuery(query string, args ...interface{}) []byte {
 		err := rows.Scan(&t, &b)
 		if err != nil {
 			log.Errorln("DB query error:", err)
-			return []byte(`{"status": "failed"}`)
+			return jsonError("DB query error", err)
 		}
 		bandwidth = append(bandwidth, Bandwidth{Time: t, Bandwidth: b})
 	}
 	err = rows.Err()
 	if err != nil {
 		log.Errorln("DB query error:", err)
-		return []byte(`{"status": "failed"}`)
+		return jsonError("DB query error", err)
 	}
 
 	data, err := json.Marshal(bandwidth)
 	if err != nil {
-		log.Errorln("Bandwidth json marshal error:", err)
-		return []byte(`{"status": "failed"}`)
+		log.Errorln("Json marshal error:", err)
+		return jsonError("Json marshal error", err)
 	}
 	return data
 }
