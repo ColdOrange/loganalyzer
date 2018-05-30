@@ -8,7 +8,7 @@ import (
 	"path"
 	"path/filepath"
 
-	log "loganalyzer/loganalyzer/logging"
+	log "github.com/ColdOrange/loganalyzer/loganalyzer/logging"
 )
 
 func StartWebpackWatcher() {

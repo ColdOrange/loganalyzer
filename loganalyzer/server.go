@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	log "loganalyzer/loganalyzer/logging"
+	log "github.com/ColdOrange/loganalyzer/loganalyzer/logging"
 )
 
 var cache *Cache

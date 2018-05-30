@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 
-	"loganalyzer/loganalyzer"
-	log "loganalyzer/loganalyzer/logging"
+	"github.com/ColdOrange/loganalyzer/loganalyzer"
+	log "github.com/ColdOrange/loganalyzer/loganalyzer/logging"
 )
 
 func init() {

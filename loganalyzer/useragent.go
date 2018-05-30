@@ -3,7 +3,7 @@ package loganalyzer
 import (
 	"encoding/json"
 
-	log "loganalyzer/loganalyzer/logging"
+	log "github.com/ColdOrange/loganalyzer/loganalyzer/logging"
 )
 
 type OperatingSystem struct {

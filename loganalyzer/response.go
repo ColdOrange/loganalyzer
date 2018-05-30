@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	log "loganalyzer/loganalyzer/logging"
+	log "github.com/ColdOrange/loganalyzer/loganalyzer/logging"
 )
 
 type StatusCode struct {

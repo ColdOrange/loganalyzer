@@ -15,7 +15,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/avct/uasurfer"
-	log "loganalyzer/loganalyzer/logging"
+	log "github.com/ColdOrange/loganalyzer/loganalyzer/logging"
 )
 
 func Analyze(id int) error {

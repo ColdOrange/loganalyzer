@@ -11,7 +11,7 @@ import (
 	"runtime"
 
 	_ "github.com/go-sql-driver/mysql"
-	log "loganalyzer/loganalyzer/logging"
+	log "github.com/ColdOrange/loganalyzer/loganalyzer/logging"
 )
 
 type DBConfig struct {

@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	log "loganalyzer/loganalyzer/logging"
+	log "github.com/ColdOrange/loganalyzer/loganalyzer/logging"
 )
 
 type Handler struct {
