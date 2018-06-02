@@ -14,8 +14,8 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/avct/uasurfer"
 	log "github.com/ColdOrange/loganalyzer/loganalyzer/logging"
+	"github.com/avct/uasurfer"
 )
 
 func Analyze(id int) error {

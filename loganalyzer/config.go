@@ -3,6 +3,7 @@ package loganalyzer
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -10,8 +11,8 @@ import (
 	"path/filepath"
 	"runtime"
 
-	_ "github.com/go-sql-driver/mysql"
 	log "github.com/ColdOrange/loganalyzer/loganalyzer/logging"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type DBConfig struct {
@@ -68,6 +69,22 @@ func init() {
 	loadLogConfig()
 }
 
+// Note: should only be called when database name is provided in config
+func OpenDB(config *DBConfig) error {
+	var err error // Reuse global db variable
+	db, err = sql.Open(config.Driver, fmt.Sprintf("%s:%s@/%s?multiStatements=true", config.Username, config.Password, config.Database))
+	if err != nil {
+		return errors.New("Open DB error: " + err.Error())
+	}
+	// Note: sql.Open doesn't really open a connection, so we need ping to check error.
+	// See https://github.com/go-sql-driver/mysql/wiki/Examples
+	err = db.Ping()
+	if err != nil {
+		return errors.New("Connect to DB error: " + err.Error())
+	}
+	return nil
+}
+
 func loadDBConfig() {
 	data, err := ioutil.ReadFile(dbConfigFile)
 	if os.IsNotExist(err) {
@@ -86,16 +103,9 @@ func loadDBConfig() {
 
 	// Open DB
 	log.Debugln("DBConfig loaded, open DB")
-	db, err = sql.Open(dbConfig.Driver, fmt.Sprintf("%s:%s@/%s?multiStatements=true", dbConfig.Username, dbConfig.Password, dbConfig.Database))
+	err = OpenDB(&dbConfig)
 	if err != nil {
-		log.Errorln("Open DB error:", err)
-		return
-	}
-	// Note: sql.Open doesn't really open a connection, so we need ping to check error.
-	// See https://github.com/go-sql-driver/mysql/wiki/Examples
-	err = db.Ping()
-	if err != nil {
-		log.Errorln("Connect to DB error:", err)
+		log.Errorln(err)
 		return
 	}
 	log.Debugln("Open DB successfully")
@@ -200,6 +210,21 @@ func setDBConfig(data []byte) []byte {
 			log.Errorln("Use DB error:", err)
 			return jsonError("Use DB error", err)
 		}
+		// Note: db (returned by sql.Open) is not a connection, but a connection pool.
+		//       db.exec("USE ...") only affect this connection, to change all connections, we have to reopen db.
+		//       Or else we will get Error 1046: No database selected.
+		//       (Is there a better way to do this without close and reopen?)
+		// See: http://go-database-sql.org/surprises.html - Connection State Mismatch
+		err = db.Close()
+		if err != nil {
+			log.Errorln("Close DB error:", err)
+			return jsonError("Close DB error", err)
+		}
+		err = OpenDB(&config)
+		if err != nil {
+			log.Errorln(err)
+			return jsonError(err)
+		}
 		log.Debugln("Open and create DB successfully")
 	} else {
 		// DBConfig was initialized, reopen and clear DB
@@ -236,6 +261,21 @@ func setDBConfig(data []byte) []byte {
 		if err != nil {
 			log.Errorln("Use DB error:", err)
 			return jsonError("Use DB error", err)
+		}
+		// Note: db (returned by sql.Open) is not a connection, but a connection pool.
+		//       db.exec("USE ...") only affect this connection, to change all connections, we have to reopen db.
+		//       Or else we will get Error 1046: No database selected.
+		//       (Is there a better way to do this without close and reopen?)
+		// See: http://go-database-sql.org/surprises.html - Connection State Mismatch
+		err = db.Close() // TODO: God, I just close db twice in a function... Is there a slightly elegant way?
+		if err != nil {
+			log.Errorln("Close DB error:", err)
+			return jsonError("Close DB error", err)
+		}
+		err = OpenDB(&config)
+		if err != nil {
+			log.Errorln(err)
+			return jsonError(err)
 		}
 		log.Debugln("Reopen and clear DB successfully")
 	}
