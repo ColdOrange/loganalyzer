@@ -8,7 +8,7 @@ The backend is written in `Go` which provides RESTful API service, while fronten
 ```bash
 $ go get github.com/ColdOrange/loganalyzer
 $ cd $GOPATH/src/github.com/ColdOrange/loganalyzer/assets && yarn && yarn deploy
-$ cd .. && go run main.go # open browser and visit http://localhost:8000
+$ cd .. && go run main.go # open browser and visit http://localhost:8080
 ```
 
 ## License
