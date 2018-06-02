@@ -17,6 +17,7 @@ func requestMethod(table string) []byte {
 		log.Errorln("DB query error:", err)
 		return jsonError("DB query error", err)
 	}
+	defer rows.Close()
 
 	var (
 		requestMethod []RequestMethod
@@ -56,6 +57,7 @@ func httpVersion(table string) []byte {
 		log.Errorln("DB query error:", err)
 		return jsonError("DB query error", err)
 	}
+	defer rows.Close()
 
 	var (
 		httpVersion []HTTPVersion
@@ -97,6 +99,7 @@ func requestURL(table string) []byte {
 		log.Errorln("DB query error:", err)
 		return jsonError("DB query error", err)
 	}
+	defer rows.Close()
 
 	var (
 		requestURL []RequestURL
@@ -140,6 +143,7 @@ func staticFile(table string) []byte {
 		log.Errorln("DB query error:", err)
 		return jsonError("DB query error", err)
 	}
+	defer rows.Close()
 
 	var (
 		staticFile []StaticFile

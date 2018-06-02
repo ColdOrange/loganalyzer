@@ -17,6 +17,7 @@ func operatingSystem(table string) []byte {
 		log.Errorln("DB query error:", err)
 		return jsonError("DB query error", err)
 	}
+	defer rows.Close()
 
 	var (
 		operatingSystem []OperatingSystem
@@ -56,6 +57,7 @@ func device(table string) []byte {
 		log.Errorln("DB query error:", err)
 		return jsonError("DB query error", err)
 	}
+	defer rows.Close()
 
 	var (
 		devices []Device
@@ -96,6 +98,7 @@ func browser(table string) []byte {
 		log.Errorln("DB query error:", err)
 		return jsonError("DB query error", err)
 	}
+	defer rows.Close()
 
 	var (
 		browsers []Browser

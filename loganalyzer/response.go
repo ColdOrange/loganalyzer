@@ -19,6 +19,7 @@ func statusCode(table string) []byte {
 		log.Errorln("DB query error:", err)
 		return jsonError("DB query error", err)
 	}
+	defer rows.Close()
 
 	var (
 		statusCode []StatusCode
@@ -70,6 +71,7 @@ func responseTime(table string) []byte {
 		log.Errorln("DB query error:", err)
 		return jsonError("DB query error", err)
 	}
+	defer rows.Close()
 
 	var (
 		responseTime []ResponseTime
@@ -111,6 +113,7 @@ func responseURL(table string) []byte {
 		log.Errorln("DB query error:", err)
 		return jsonError("DB query error", err)
 	}
+	defer rows.Close()
 
 	var (
 		responseURL []ResponseURL

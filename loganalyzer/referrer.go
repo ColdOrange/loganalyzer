@@ -18,6 +18,7 @@ func referringSite(table string) []byte {
 		log.Errorln("DB query error:", err)
 		return jsonError("DB query error", err)
 	}
+	defer rows.Close()
 
 	var (
 		referringSites []ReferringSite
@@ -59,6 +60,7 @@ func referringURL(table string) []byte {
 		log.Errorln("DB query error:", err)
 		return jsonError("DB query error", err)
 	}
+	defer rows.Close()
 
 	var (
 		referringURLs []ReferringURL

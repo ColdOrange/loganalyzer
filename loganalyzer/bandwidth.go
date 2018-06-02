@@ -29,6 +29,7 @@ func bandwidthQuery(query string, args ...interface{}) []byte {
 		log.Errorln("DB query error:", err)
 		return jsonError("DB query error", err)
 	}
+	defer rows.Close()
 
 	var (
 		bandwidth []Bandwidth
